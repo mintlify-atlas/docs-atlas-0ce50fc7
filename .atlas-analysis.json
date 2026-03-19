@@ -1,0 +1,150 @@
+{
+  "projectType": "saas",
+  "projectName": "GPSpedia",
+  "projectDescription": "A specialized SaaS platform providing a technical catalog of vehicle cut points, relay configurations, and installation guides for GPS tracking professionals and automotive technicians.",
+  "theme": "almond",
+  "primaryColor": "#007bff",
+  "lightColor": "#e8f4ff",
+  "darkColor": "#0056b3",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "accessing-the-platform"]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/vehicle-catalog",
+              "features/search",
+              "features/cut-points",
+              "features/relay-configurations",
+              "features/tutorials"
+            ]
+          },
+          {
+            "group": "Using the Platform",
+            "pages": [
+              "guides/browsing-catalog",
+              "guides/adding-records",
+              "guides/feedback-and-reporting",
+              "guides/dark-mode",
+              "guides/pwa-installation"
+            ]
+          },
+          {
+            "group": "Account & Users",
+            "pages": [
+              "account/profile",
+              "account/user-roles",
+              "account/user-management"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "admin/dashboard",
+              "admin/inbox",
+              "admin/developer-tools"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": ["faq", "contact"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["api-reference/overview", "api-reference/authentication"]
+          },
+          {
+            "group": "Catalog",
+            "pages": [
+              "api-reference/catalog/get-catalog-data",
+              "api-reference/catalog/get-navigation-data",
+              "api-reference/catalog/get-dropdown-data",
+              "api-reference/catalog/get-suggestion"
+            ]
+          },
+          {
+            "group": "Write Operations",
+            "pages": [
+              "api-reference/write/check-vehicle",
+              "api-reference/write/add-or-update-cut",
+              "api-reference/write/add-supplementary-info"
+            ]
+          },
+          {
+            "group": "Feedback",
+            "pages": [
+              "api-reference/feedback/record-like",
+              "api-reference/feedback/report-problem",
+              "api-reference/feedback/send-contact-form",
+              "api-reference/feedback/get-feedback-items",
+              "api-reference/feedback/reply-to-feedback",
+              "api-reference/feedback/mark-as-resolved",
+              "api-reference/feedback/get-activity-logs"
+            ]
+          },
+          {
+            "group": "Users",
+            "pages": [
+              "api-reference/users/get-users",
+              "api-reference/users/create-user",
+              "api-reference/users/update-user",
+              "api-reference/users/delete-user",
+              "api-reference/users/change-password",
+              "api-reference/users/update-profile"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Hierarchical vehicle catalog browsable by category, brand, model, and year range",
+    "Technical cut point data with cable location, color, and relay configuration",
+    "Relay configuration diagrams with pin-by-pin details",
+    "Step-by-step visual tutorials for vehicle disassembly and cable identification",
+    "Real-time search with intelligent brand and model matching",
+    "Collaborative data entry with anti-duplication wizard",
+    "Community feedback via per-cut likes and problem reports",
+    "Role-based access control (RBAC) with Jefe, Supervisor, and Tecnico roles",
+    "Admin dashboard with activity logs and inbox for managing reports",
+    "Progressive Web App (PWA) with offline support via service worker",
+    "Dark mode with persistent preference and dynamic branding",
+    "Google Sheets backend via Google Apps Script microservices"
+  ],
+  "publicApiSurface": [
+    "routeAction(action, payload) — central API router dispatching to Google Apps Script endpoints",
+    "getCatalogData — fetch complete catalog (cortes, tutoriales, relay, logos)",
+    "getNavigationData — fetch lightweight navigation metadata (categories, brands, logos)",
+    "getDropdownData — fetch dropdown options for the data entry form",
+    "getSuggestion(term, field) — fuzzy spelling suggestion using Levenshtein distance",
+    "checkVehicle(vehicleInfo) — check for existing vehicle matches before adding",
+    "addOrUpdateCut(vehicleId, vehicleData, cutData, colaborador) — add or update a cut point",
+    "addSupplementaryInfo(vehicleId, apertura, cableAlimen, notaImportante, images) — add supplementary vehicle info",
+    "login(username, password) — authenticate user and return session token",
+    "validateSession(userId, sessionToken) — validate an existing session",
+    "recordLike(vehicleId, corteIndex, userId, userName) — upvote a cut point",
+    "reportProblem(vehicleId, problemDescription, userId, userName) — report a data error",
+    "sendContactForm(name, email, message, userId) — submit contact/support form",
+    "getFeedbackItems() — retrieve all inbox feedback items for admin",
+    "replyToFeedback(itemId, itemType, replyText, responderName) — reply to a feedback item",
+    "markAsResolved(itemId) — mark a feedback item as resolved",
+    "getActivityLogs() — retrieve user activity audit logs",
+    "getUsers() — list users (admin only)",
+    "createUser(userData) — create a new user account",
+    "updateUser(userData) — update an existing user",
+    "deleteUser(userId) — delete a user",
+    "changePassword(userId, newPassword) — change a user password",
+    "updateProfile(userId, profileData) — update current user profile"
+  ]
+}
