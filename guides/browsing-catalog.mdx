@@ -1,0 +1,105 @@
+---
+title: "Browsing the catalog"
+description: "Learn how to navigate the GPSpedia catalog to find vehicle cut points, relay configurations, and installation guides."
+---
+
+The GPSpedia catalog is organized around vehicles. From the home screen, you can reach any cut point record in a few taps by browsing categories, brands, or recently added entries.
+
+## Home screen layout
+
+When you open GPSpedia, the home screen displays four carousels:
+
+<Columns cols={2}>
+  <Card title="Últimos Agregados" icon="clock">
+    A rotating carousel of the most recently added vehicle records. Use this to stay up to date with new contributions.
+  </Card>
+  <Card title="Búsqueda por Categoría" icon="grid-2x2">
+    Category cards, each illustrated with an example vehicle image. Tap a card to browse all brands within that category.
+  </Card>
+  <Card title="Búsqueda por Marca de Vehículos" icon="car">
+    Brand logos for cars, trucks, and light commercial vehicles. Tap a logo to jump directly to that brand's models.
+  </Card>
+  <Card title="Búsqueda por Marca de Motocicletas" icon="bike">
+    Brand logos for motorcycles. Works the same way as the vehicle brand carousel.
+  </Card>
+</Columns>
+
+## Navigating to a cut point
+
+The catalog uses a drill-down structure. Each level narrows the results until you reach the detail view for a specific vehicle configuration.
+
+<Steps>
+  <Step title="Choose a starting point">
+    From the home screen, pick one of the three entry paths:
+
+    - Tap a card in **Búsqueda por Categoría** to start from a vehicle type.
+    - Tap a logo in **Búsqueda por Marca de Vehículos** or **Búsqueda por Marca de Motocicletas** to start from a brand.
+    - Tap any entry in **Últimos Agregados** to go directly to that record's detail view.
+  </Step>
+  <Step title="Select a brand (if entering via category)">
+    After tapping a category, you see a list of brands that have records in that category. Tap the brand you are looking for.
+  </Step>
+  <Step title="Select a model">
+    A list of models for the chosen brand appears. Tap the model that matches the vehicle you are working on.
+  </Step>
+  <Step title="Select an equipment version (if applicable)">
+    Some models have multiple equipment versions (e.g., standard vs. luxury trim). If more than one version exists, you are prompted to select one. If only one version exists, this screen is skipped automatically.
+  </Step>
+  <Step title="Select an ignition type (if applicable)">
+    If the model has records for more than one ignition type, you are prompted to choose. This step is also skipped automatically when only one ignition type is present.
+  </Step>
+  <Step title="Select a year range">
+    Choose the year range that matches the vehicle's production year.
+  </Step>
+  <Step title="View the detail modal">
+    The detail modal opens and displays all available cut points, relay configurations, cable colors, cut locations, and any supplementary installation notes for that vehicle.
+  </Step>
+</Steps>
+
+<Note>
+  On mobile, you can refresh the current screen by pulling down from the top of the page. Release after pulling more than roughly 150 px to trigger the reload. This is useful after new records have been added.
+</Note>
+
+## Back navigation
+
+You can move back through the drill-down levels at any time:
+
+- **Browser back button** — returns to the previous level in the navigation hierarchy.
+- **Hardware back gesture on Android** — same behavior as the browser back button.
+- **Side menu** — if the side menu is open, pressing back closes it before navigating back.
+- **Lightbox** — if a cut-point image is open in fullscreen, pressing back closes the image first.
+
+The app handles back navigation in the following priority order: close side menu → close lightbox → close info modals → close detail modal → return to previous catalog level.
+
+## Switching between content sections
+
+Three buttons in the header let you switch between the main content areas without returning to the home screen:
+
+- **Cortes** — cut point records (default view).
+- **Tutoriales** — installation tutorial content.
+- **Configuración Relay** — relay wiring diagrams and configurations.
+
+Tap the relevant button to switch sections at any point in your session.
+
+## Side menu
+
+Tap the hamburger icon (three horizontal lines) in the top-left corner to open the side menu. The menu contains:
+
+<AccordionGroup>
+  <Accordion title="Main navigation links">
+    - **Cortes** — go to the cut points catalog.
+    - **Agregar Nuevo** — open the add-record wizard (authorized contributors only).
+    - **Tutoriales** — go to the tutorials section.
+    - **Configuración Relay** — go to relay configuration diagrams.
+  </Accordion>
+  <Accordion title="Account links">
+    - **Mi Perfil / Usuarios** — view your profile or manage users.
+    - **Cerrar Sesión** — sign out of your current session.
+  </Accordion>
+  <Accordion title="Appearance">
+    - **Modo Oscuro** — toggle between light and dark themes. Your preference is saved automatically.
+  </Accordion>
+  <Accordion title="Admin-only items">
+    **Inbox**, **Dashboard**, and **Desarrollador** are hidden by default and only visible to accounts with administrator or developer permissions.
+  </Accordion>
+</AccordionGroup>

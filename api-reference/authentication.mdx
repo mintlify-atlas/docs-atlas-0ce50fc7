@@ -1,0 +1,141 @@
+---
+title: "Authentication"
+description: "Log in with credentials and validate active sessions using the AUTH service."
+---
+
+The AUTH service handles two actions: `login` for credential-based authentication and `validateSession` for verifying an existing session token. Both use the AUTH endpoint.
+
+**Endpoint:** `AUTH` service
+
+<Note>
+  After a successful login, store the `SessionToken` and `ID` from the response and pass them to `validateSession` on subsequent page loads to restore the user's session without requiring re-login.
+</Note>
+
+---
+
+## Login
+
+**Action:** `login`
+
+Authenticates a user with a username and password. Returns a user object and session token on success.
+
+### Request
+
+<ParamField path="action" type="string" required>
+  Must be `"login"`.
+</ParamField>
+
+<ParamField path="payload.username" type="string" required>
+  The user's username.
+</ParamField>
+
+<ParamField path="payload.password" type="string" required>
+  The user's password.
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  <Expandable title="user properties">
+    <ResponseField name="ID" type="number">
+      Unique user identifier.
+    </ResponseField>
+    <ResponseField name="Nombre_Usuario" type="string">
+      The user's username.
+    </ResponseField>
+    <ResponseField name="Nombre_Completo" type="string">
+      The user's full name.
+    </ResponseField>
+    <ResponseField name="Rol" type="string">
+      The user's role. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+    </ResponseField>
+    <ResponseField name="SessionToken" type="string">
+      A session token to use for subsequent `validateSession` calls.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example
+
+```javascript
+const AUTH_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwATstMSSnuYZMeGEjI7Q5cznO6kA8rqLo7zNZLmu_f29qwcyt4Fucn5VIBdB9tMoRg/exec';
+
+const response = await fetch(AUTH_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'login',
+    payload: { username: 'jdoe', password: 'secret' }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const { ID, SessionToken, Rol } = result.user;
+  localStorage.setItem('userId', ID);
+  localStorage.setItem('sessionToken', SessionToken);
+}
+```
+
+---
+
+## Validate session
+
+**Action:** `validateSession`
+
+Checks whether a previously issued session token is still valid. Use this on app startup to restore an authenticated session.
+
+### Request
+
+<ParamField path="action" type="string" required>
+  Must be `"validateSession"`.
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the user whose session is being validated.
+</ParamField>
+
+<ParamField path="payload.sessionToken" type="string" required>
+  The session token returned from a prior `login` response.
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  `true` if the session token is valid and the user session is active; `false` otherwise.
+</ResponseField>
+
+### Example
+
+```javascript
+const AUTH_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwATstMSSnuYZMeGEjI7Q5cznO6kA8rqLo7zNZLmu_f29qwcyt4Fucn5VIBdB9tMoRg/exec';
+
+const userId = Number(localStorage.getItem('userId'));
+const sessionToken = localStorage.getItem('sessionToken');
+
+const response = await fetch(AUTH_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'validateSession',
+    payload: { userId, sessionToken }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success' && result.valid) {
+  // Session is active — proceed to the app
+} else {
+  // Redirect to login
+}
+```

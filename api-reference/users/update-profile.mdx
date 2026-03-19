@@ -1,0 +1,57 @@
+---
+title: "Update profile"
+description: "Allow a user to update their own display name."
+---
+
+Allows a logged-in user to update their own full display name (`Nombre_Completo`). This is a self-service action and does not require elevated role permissions. To change a user's role or status, use `updateUser` instead.
+
+**Endpoint:** `USERS` service
+
+**Action:** `updateProfile`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"updateProfile"`.
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the currently logged-in user updating their own profile.
+</ParamField>
+
+<ParamField path="payload.Nombre_Completo" type="string" required>
+  The new full display name to set for the user.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
+
+const currentUserId = Number(localStorage.getItem('userId'));
+
+const response = await fetch(USERS_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'updateProfile',
+    payload: {
+      userId: currentUserId,
+      Nombre_Completo: 'Carlos Mejía Vargas'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Profile updated');
+  // Refresh the local user display name in the UI
+}
+```

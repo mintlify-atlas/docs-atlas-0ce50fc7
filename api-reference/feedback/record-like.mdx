@@ -1,0 +1,65 @@
+---
+title: "Record like"
+description: "Record a community upvote on a specific cut point within a vehicle record."
+---
+
+Increments the community vote count (`utilCorte`) for a specific cut point on a vehicle record. Each call represents a single technician's vote that the cut information was useful.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `recordLike`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"recordLike"`.
+</ParamField>
+
+<ParamField path="payload.vehicleId" type="number" required>
+  The ID of the vehicle whose cut is being voted on.
+</ParamField>
+
+<ParamField path="payload.corteIndex" type="number" required>
+  Zero-based index of the cut point within the vehicle record (e.g., `0` for the first cut, `1` for the second).
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the user casting the vote.
+</ParamField>
+
+<ParamField path="payload.userName" type="string" required>
+  The display name of the user casting the vote, used for activity logging.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'recordLike',
+    payload: {
+      vehicleId: 42,
+      corteIndex: 0,
+      userId: 7,
+      userName: 'Juan Díaz'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Vote recorded successfully');
+  // Update local UI to reflect new vote count
+}
+```

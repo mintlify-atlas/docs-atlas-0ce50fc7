@@ -1,0 +1,61 @@
+---
+title: "Search"
+description: "Find vehicle cut point records instantly using real-time text and year-range search across the entire catalog."
+---
+
+The search bar is available at the top of the main screen. Results filter in real time as you type — no need to press Enter or tap a search button.
+
+## How search works
+
+Search matches across three fields on every cut point record:
+
+- **Brand** (`marca`)
+- **Model** (`modelo`)
+- **Applicable versions** (`versionesAplicables`)
+
+Every word you type must appear somewhere in that combined text. A query like `Toyota Corolla` only returns records where both `toyota` and `corolla` appear — partial matches on individual words are supported.
+
+## Year range matching
+
+If your query contains a four-digit number between 1900 and 2100, GPSpedia treats it as a year filter. Instead of looking for the literal digit string in the vehicle name, it checks whether that year falls within the record's `anoDesde`–`anoHasta` range.
+
+**Example:** Typing `2021` returns all vehicles whose year range includes 2021 — even if the record covers 2018–2023.
+
+Year detection is combined with text matching. A query like `Toyota 2020` finds all Toyota records where 2020 is within the covered year range.
+
+<Note>
+Year detection only activates for four-digit numbers in the range 1900–2100. Numbers outside that range are treated as plain text.
+</Note>
+
+## Brand detection
+
+When your search query matches records from exactly one brand, the results switch to the brand card view — the same view you would see by navigating **Categories → Brand**. This makes it easy to browse all models from a brand without navigating the full hierarchy.
+
+## Smart de-duplication
+
+Search results show one card per unique model + version combination. If multiple year-range records exist for the same model and version, they are grouped into a single card. Tapping that card takes you to the year selection screen.
+
+## Clearing search
+
+Tap the **X** button in the search bar to clear your query. The view returns to the home screen with the full category and brand carousels.
+
+<Tip>
+If your search returns exactly one result, the cut point detail modal opens immediately — you skip the intermediate navigation screens entirely.
+</Tip>
+
+## Search tips
+
+<AccordionGroup>
+  <Accordion title="Searching by brand only">
+    Type just the brand name (for example, `Honda`) to see all Honda models available in the catalog. If Honda is the only brand in the results, the brand card view loads automatically.
+  </Accordion>
+  <Accordion title="Combining brand, model, and year">
+    You can combine all three in a single query: `Honda Civic 2019`. The search applies both the text filter (brand + model) and the year range filter simultaneously.
+  </Accordion>
+  <Accordion title="Partial word matching">
+    Each word in your query is checked as a substring. Typing `Cor` matches `Corolla`, `Corsa`, and any other model containing those letters. Add more characters to narrow the results.
+  </Accordion>
+  <Accordion title="Version-specific search">
+    Equipment version strings like `EX`, `LX`, or `Sport` are included in the search text. You can type a version designation to filter records to a specific trim level.
+  </Accordion>
+</AccordionGroup>

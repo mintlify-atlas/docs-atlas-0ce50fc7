@@ -1,0 +1,105 @@
+---
+title: "Cut points"
+description: "Understand the structure of vehicle cut point records, how to read cut detail views, and how to contribute feedback on installation data."
+---
+
+A cut point is a specific location in a vehicle's electrical system where a GPS tracking device can interrupt a circuit — typically to enable remote immobilization. Each cut point record in GPSpedia identifies the exact wire, its location in the vehicle, its color, and the relay configuration required to complete the installation safely.
+
+## Cut types
+
+GPSpedia recognizes four cut point types:
+
+<Columns cols={2}>
+  <Card title="Bomba de Combustible" icon="droplet">
+    Fuel pump cut. Interrupting this circuit prevents the engine from receiving fuel, immobilizing the vehicle without affecting the ignition system.
+  </Card>
+  <Card title="Señal al Botón" icon="hand-pointer">
+    Signal to button cut. Used on push-button start vehicles — interrupts the signal between the start button and the ECU.
+  </Card>
+  <Card title="Corte de Ignición" icon="key">
+    Ignition cut. Interrupts the ignition circuit, cutting power to the vehicle's primary control systems.
+  </Card>
+  <Card title="Apertura de Puertas" icon="door-open">
+    Door release. Identifies the wire used to trigger central locking or door release — useful for integration with GPS devices that include a door control output.
+  </Card>
+</Columns>
+
+## Cut point detail view
+
+Tapping a vehicle record from the catalog or search results opens the cut point detail modal. The modal is divided into several sections.
+
+### Vehicle overview
+
+The top of the detail view shows:
+
+- A **vehicle image** (tap to open in the high-resolution lightbox)
+- The vehicle's **brand**, **model**, **applicable versions**, and **year range**
+- An **ignition type** label
+- A **notaImportante** alert box (shown in red when present) — read this before proceeding with the installation
+
+<Warning>
+When a **Nota Importante** appears at the top of a record, it contains critical information about the specific vehicle — such as known wiring variations, safety precautions, or conditions that affect which cut point to use. Always read it before starting work.
+</Warning>
+
+### Recommended cut
+
+The first cut shown is labeled **Corte Recomendado**. This is the cut point with the highest number of community votes from other GPS technicians who have marked it as useful. It includes:
+
+| Field | Description |
+|---|---|
+| Cut type | The category of interruption (see cut types above) |
+| Location | Descriptive text indicating where in the vehicle the wire is found |
+| Cable color | The wire color to identify at that location |
+| Relay configuration | The relay wiring scheme required — tap the name to open the relay info modal |
+| Cut image | A photo of the actual cut point location (tap to enlarge) |
+| Contributor | The GPSpedia member who submitted this cut point |
+
+### Alternative cuts
+
+If a record includes additional cut point options (up to three total), they appear below the recommended cut in collapsible **Accordion** sections. Expand them to compare alternatives — for example, when the recommended cut location is inaccessible on a specific vehicle variant.
+
+### Supplementary sections
+
+Below the cut points, the detail view may include:
+
+<AccordionGroup>
+  <Accordion title="Apertura de Puertas">
+    When present, this section shows the wire used to trigger central locking or door release — separate from the main immobilization cut points. Includes the wire location, color, and an installation photo.
+  </Accordion>
+  <Accordion title="Cables de Alimentación">
+    Power supply wire information for the GPS device itself — identifies where to tap into a constant 12V source. Includes photo documentation.
+  </Accordion>
+  <Accordion title="Vídeo Guía de Desarme">
+    An embedded YouTube video showing how to disassemble the relevant part of the vehicle's interior to access the cut point location. The video stops automatically when you close the modal.
+  </Accordion>
+</AccordionGroup>
+
+## Cut image interactions
+
+Each cut image supports two actions via overlay buttons:
+
+### Mark as useful
+
+Tap the **Marcar como útil** button (thumbs up) to vote for a cut point. Your vote:
+
+- Turns the button green immediately (optimistic UI)
+- Is stored in your local session so you cannot vote twice for the same cut
+- Contributes to the community ranking that determines which cut is shown as **Corte Recomendado**
+
+### Report a problem
+
+Tap the **Reportar un problema** button (warning icon) if the cut point information appears incorrect, the photo does not match the vehicle, or you encounter another issue. You will be prompted to describe the problem before it is submitted to the GPSpedia feedback system.
+
+## High-resolution lightbox
+
+Tap any cut image or vehicle photo to open it in the lightbox viewer at full resolution. GPSpedia serves images at three resolution tiers:
+
+| Context | Resolution |
+|---|---|
+| Cards and thumbnails | 300 px |
+| Modal detail view | 800 px |
+| Lightbox (full resolution) | 1600 px |
+
+<Tip>
+Use the lightbox when you need to identify a specific connector or wire bundle in a crowded harness — the 1600 px images reveal detail that is not visible in the standard modal view.
+</Tip>

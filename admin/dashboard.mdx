@@ -1,0 +1,64 @@
+---
+title: "Activity dashboard"
+description: "Monitor platform-wide activity using the activity log dashboard."
+---
+
+The activity dashboard gives authorized users a chronological view of everything happening on the platform — logins, record additions, votes, and problem reports.
+
+## Access
+
+The dashboard is available to users with the **Supervisor** or **Jefe** role. Look for **Dashboard** in the side navigation menu. Tecnico users do not see this option.
+
+## Opening the dashboard
+
+<Steps>
+  <Step title="Open the side menu">
+    Click the menu icon to expand the side navigation panel.
+  </Step>
+  <Step title="Click Dashboard">
+    Click **Dashboard** in the side menu. The activity log modal will open.
+  </Step>
+  <Step title="Review activity entries">
+    The dashboard loads the most recent activity entries automatically. Each row represents one logged event.
+  </Step>
+</Steps>
+
+## Dashboard columns
+
+Each activity entry in the log table includes the following columns:
+
+| Column | Description |
+|---|---|
+| **Timestamp** | Date and time the action occurred, formatted in local time. |
+| **Nombre de Usuario** | The username of the user who performed the action. |
+| **Tipo de Actividad** | The category of action (see activity types below). |
+| **Detalle** | Additional context about the action, such as the vehicle or record affected. |
+
+## Common activity types
+
+The **Tipo de Actividad** column reflects the type of action logged. Common values include:
+
+<CardGroup cols={2}>
+  <Card title="Login" icon="arrow-right-to-bracket">
+    Recorded when a user successfully authenticates and starts a session.
+  </Card>
+  <Card title="Record addition" icon="plus">
+    Logged when a user adds a new cut point record, relay configuration, or catalog entry.
+  </Card>
+  <Card title="Cut vote" icon="thumbs-up">
+    Recorded when a user votes on a cut point image or data entry.
+  </Card>
+  <Card title="Problem report" icon="triangle-exclamation">
+    Logged when a user submits a problem report on a specific cut point entry.
+  </Card>
+</CardGroup>
+
+## Reading the log
+
+Entries are displayed in reverse chronological order — the most recent activity appears first. Each row gives you enough context to understand what happened, when it happened, and who performed the action.
+
+The **Detalle** column often includes the specific record or vehicle name involved in the action, making it easy to trace activity related to a particular catalog entry.
+
+<Note>
+  The dashboard fetches a fresh set of activity entries each time it is opened. If you need to review activity that happened earlier in the session, close and reopen the dashboard to refresh the log.
+</Note>

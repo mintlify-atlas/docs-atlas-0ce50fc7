@@ -1,0 +1,110 @@
+---
+title: "Accessing the platform"
+description: "How to request access, log in, manage your session, and understand user roles in GPSpedia."
+---
+
+## Requesting access
+
+GPSpedia does not support self-registration. Access is granted manually by an administrator after you submit a request.
+
+To request access:
+
+1. Open GPSpedia in your browser. The login screen includes a contact form.
+2. Fill in your name, organization, and intended use.
+3. Submit the form. An administrator will review the request and provision your account.
+4. Once your account is ready, you'll receive your username and a temporary password through the agreed contact channel.
+
+<Note>
+  Usernames are permanent. They cannot be changed after your account is created, so ensure the administrator uses the correct username when provisioning your account.
+</Note>
+
+## Logging in
+
+When you open GPSpedia, the login modal appears automatically if no valid session is detected.
+
+<Steps>
+  <Step title="Enter your credentials">
+    Type your username into the **Usuario** field and your password into the **Contraseña** field.
+  </Step>
+  <Step title="Submit">
+    Click **Acceder**. The app sends your credentials to the authentication backend for validation.
+  </Step>
+  <Step title="Access the catalog">
+    On successful login, the splash screen transitions to the main catalog view and your session begins. Initial catalog data loads automatically in the background.
+  </Step>
+</Steps>
+
+### Forgot password
+
+If you've forgotten your password, use the **¿Olvidaste tu contraseña?** link on the login modal. This initiates a password reset flow. Because accounts are manually managed, the process may involve contacting your administrator directly depending on how your organization has configured the reset workflow.
+
+## Session management
+
+GPSpedia uses a persistent client-side session stored in your browser's `localStorage`.
+
+**How it works:**
+
+- On successful login, your user data and a session token are written to `localStorage` under the key `gpsepedia_session`.
+- Each time you open the app, it reads this stored session and validates the token with the server before granting access.
+- If the token is valid, you're logged in automatically — no need to re-enter credentials.
+- If the token is invalid or expired, the app logs you out and displays the login modal with the message **"Tu sesión ha expirado."**
+
+**Session expiry:**
+
+Sessions expire server-side based on inactivity or a fixed time limit set by administrators. When your session expires, you'll be returned to the login screen automatically the next time you open the app or perform an action that requires authentication.
+
+<Warning>
+  `localStorage` is tied to the browser and device. If you log in on a new device or a different browser, you'll need to log in again. Clearing your browser data also clears your session.
+</Warning>
+
+## Logging out
+
+To log out manually, open the user menu and select **Cerrar sesión**. This clears the stored session from `localStorage` and returns you to the login screen.
+
+Log out explicitly when using a shared or public device. Your session will not expire locally until it expires on the server.
+
+## User roles
+
+Every GPSpedia account is assigned one of three roles at creation. Your role determines what sections and actions you can access.
+
+<AccordionGroup>
+  <Accordion title="Tecnico" icon="wrench">
+    The base role for field technicians and installers.
+
+    **Access includes:**
+    - Full read access to the vehicle catalog (Cortes section)
+    - Step-by-step installation tutorials (Tutoriales section)
+    - Relay configuration diagrams (Relay section)
+    - Real-time vehicle search
+    - Voting on cut point entries
+
+    Tecnicos cannot create or modify catalog entries or manage other users.
+  </Accordion>
+
+  <Accordion title="Supervisor" icon="user-check">
+    An elevated role for team leads and senior technicians.
+
+    **Access includes:**
+    - Everything available to Tecnico
+    - Additional management views for monitoring team activity
+    - Elevated permissions for content interactions
+
+    Supervisors cannot manage user accounts or perform administrative configuration.
+  </Accordion>
+
+  <Accordion title="Jefe (Gefe)" icon="shield">
+    Full administrative access.
+
+    **Access includes:**
+    - Everything available to Supervisor
+    - User account management (create, deactivate, assign roles)
+    - Catalog content management (add, edit, remove entries)
+    - Platform configuration and administrative settings
+
+    The Jefe role is typically assigned to organization administrators responsible for maintaining the platform.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Your role is set by the administrator when your account is created. If you need elevated access, contact your Jefe to request a role change.
+</Info>

@@ -1,97 +1,89 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "GPSpedia"
+description: "The technical reference platform for GPS tracking professionals — vehicle cut points, relay configurations, and installation guides."
 ---
 
-## Setting up
-
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get access and look up your first vehicle cut point in minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Vehicle Catalog" icon="car" href="/features/vehicle-catalog">
+    Browse cut points by category, brand, model, and year range.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Relay Configurations" icon="microchip" href="/features/relay-configurations">
+    Pin-by-pin relay wiring diagrams for every configuration.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="API Reference" icon="code" href="/api-reference/overview">
+    Integrate with GPSpedia's Google Apps Script backend services.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What is GPSpedia?
 
-Everything you need to create world-class documentation.
+GPSpedia is a specialized technical catalog built for installers, technicians, and professionals who work with GPS tracking and vehicle security systems. Instead of searching through scattered sources, GPSpedia gives you standardized, structured information exactly where you need it — in the field.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+<Info>
+  GPSpedia is a read-only catalog for most users. Data entry is available to authorized contributors through the **Agregar Nuevo** form.
+</Info>
 
-## Need inspiration?
+## What you can do
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={3}>
+  <Card title="Find cut points" icon="scissors" href="/features/cut-points">
+    Locate ignition cut, fuel pump cut, and door release wiring for hundreds of vehicle models.
+  </Card>
+  <Card title="Identify cables" icon="plug" href="/features/cut-points">
+    See cable color, exact location, and recommended cut type for each vehicle entry.
+  </Card>
+  <Card title="View relay diagrams" icon="diagram-project" href="/features/relay-configurations">
+    Visual relay wiring with each pin's function, usage, and compatible vehicles.
+  </Card>
+  <Card title="Watch tutorials" icon="play" href="/features/tutorials">
+    Step-by-step video guides for disassembly and cable identification.
+  </Card>
+  <Card title="Search instantly" icon="magnifying-glass" href="/features/search">
+    Real-time search by brand, model, or year with intelligent fuzzy matching.
+  </Card>
+  <Card title="Install as PWA" icon="mobile" href="/guides/pwa-installation">
+    Install GPSpedia on your phone for offline-ready field access.
+  </Card>
+</CardGroup>
+
+## Who uses GPSpedia?
+
+GPSpedia is built for professionals in the vehicle security and GPS tracking industry:
+
+- **GPS installers** who need quick wiring references on the job
+- **Workshop technicians** verifying cut points and relay configurations
+- **Team supervisors** managing installer teams and reviewing activity
+- **Equipment distributors** supporting their clients with technical documentation
+
+## Get started
+
+<Steps>
+  <Step title="Request access">
+    Contact the GPSpedia team to receive your account credentials. See [Accessing the Platform](/accessing-the-platform) for details.
+  </Step>
+  <Step title="Log in">
+    Open GPSpedia and enter your username and password. Your session is stored securely in your browser.
+  </Step>
+  <Step title="Search for a vehicle">
+    Use the search bar to look up a brand, model, or year. Or browse by category and brand using the catalog navigation.
+  </Step>
+  <Step title="View the cut point">
+    Select the vehicle entry to see the recommended cut point, cable color, location, and relay configuration.
+  </Step>
+</Steps>
+
+## Platform highlights
+
+| Feature | Description |
+|---|---|
+| Vehicle catalog | Hierarchical browsing: Category → Brand → Model → Year |
+| Cut point data | Up to 3 cut types per entry, ranked by community votes |
+| Relay configs | Pin diagrams linked directly from cut point detail views |
+| Tutorials | Visual and video guides for common disassembly tasks |
+| Search | Real-time filtering by text and year range |
+| PWA | Installable on Android and iOS, works offline |
+| Dark mode | Full dark theme with persistent preference |
+| RBAC | Role-based access: Jefe, Supervisor, Tecnico |

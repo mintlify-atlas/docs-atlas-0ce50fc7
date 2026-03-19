@@ -1,0 +1,64 @@
+---
+title: "Get suggestion"
+description: "Get an autocomplete suggestion for a vehicle make or model search term."
+---
+
+Returns a single best-match suggestion for a partial search term against either the `marca` (make) or `modelo` (model) field. Used to power autocomplete inputs in the catalog search UI.
+
+**Endpoint:** `CATALOG` service
+
+**Action:** `getSuggestion`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"getSuggestion"`.
+</ParamField>
+
+<ParamField path="payload.term" type="string" required>
+  The partial search term entered by the user.
+</ParamField>
+
+<ParamField path="payload.field" type="string" required>
+  The field to search against. Must be either `"marca"` or `"modelo"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="suggestion" type="string | null">
+  The best-matching suggestion string, or `null` if no match was found for the given term.
+</ResponseField>
+
+## Example
+
+```javascript
+const CATALOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxenVjZe9C8-0RiYKLxpGfQtobRzydBke44IM4NdNNjh5VRdlB91Ce9dWvQ2xnDFXk0/exec';
+
+async function fetchSuggestion(term, field) {
+  const response = await fetch(CATALOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      action: 'getSuggestion',
+      payload: { term, field }
+    }),
+    redirect: 'follow'
+  });
+
+  const result = await response.json();
+  if (result.status === 'success') {
+    return result.suggestion; // e.g., "Toyota" or null
+  }
+  return null;
+}
+
+// Usage in a search input handler
+const suggestion = await fetchSuggestion('Toy', 'marca');
+if (suggestion) {
+  showAutocomplete(suggestion); // Display "Toyota" as the suggestion
+}
+```

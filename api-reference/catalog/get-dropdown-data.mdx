@@ -1,0 +1,71 @@
+---
+title: "Get dropdown data"
+description: "Retrieve all dropdown option lists used in the vehicle entry and search forms."
+---
+
+Returns the controlled vocabulary lists used to populate form dropdowns throughout the GPSpedia UI — including categories, makes, cut types, ignition types, and relay configurations.
+
+**Endpoint:** `CATALOG` service
+
+**Action:** `getDropdownData`
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getDropdownData"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="dropdowns" type="object">
+  <Expandable title="dropdowns properties">
+    <ResponseField name="categoria" type="array">
+      List of vehicle category strings (e.g., `"Automóviles"`, `"Camionetas"`).
+    </ResponseField>
+    <ResponseField name="marca" type="array">
+      List of all known vehicle makes (e.g., `"Toyota"`, `"Chevrolet"`).
+    </ResponseField>
+    <ResponseField name="tipoDeCorte" type="array">
+      List of cut type strings (e.g., `"Bomba de Combustible"`, `"Corte de Ición"`, `"Señal al Botón"`, `"Apertura de Puertas"`).
+    </ResponseField>
+    <ResponseField name="tipoDeEncendido" type="array">
+      List of ignition type strings (e.g., `"Convencional"`, `"Push Button"`).
+    </ResponseField>
+    <ResponseField name="configRelay" type="array">
+      List of relay configuration labels for use in cut entry forms.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const CATALOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxenVjZe9C8-0RiYKLxpGfQtobRzydBke44IM4NdNNjh5VRdlB91Ce9dWvQ2xnDFXk0/exec';
+
+const response = await fetch(CATALOG_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getDropdownData', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const { categoria, marca, tipoDeCorte, tipoDeEncendido, configRelay } = result.dropdowns;
+
+  // Populate a <select> element
+  const select = document.getElementById('marca-select');
+  marca.forEach(m => {
+    const option = document.createElement('option');
+    option.value = m;
+    option.textContent = m;
+    select.appendChild(option);
+  });
+}
+```

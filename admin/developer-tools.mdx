@@ -1,0 +1,70 @@
+---
+title: "Developer tools"
+description: "Debug console and data migration utilities available to Jefe users."
+---
+
+Developer tools give Jefes access to a live debug console and backend data migration utilities. These tools are intended for platform administrators managing the GPSpedia backend.
+
+## Access
+
+Developer tools are available to users with the **Jefe** role only. Look for **Desarrollador** in the side navigation menu. This option is not visible to Supervisor or Tecnico users.
+
+## Opening developer tools
+
+<Steps>
+  <Step title="Open the side menu">
+    Click the menu icon to expand the side navigation panel.
+  </Step>
+  <Step title="Click Desarrollador">
+    Click **Desarrollador** in the side menu. The Developer Tools modal will open.
+  </Step>
+</Steps>
+
+## Debug console
+
+The debug console is a floating terminal window that displays real-time JavaScript debug logs from the running application. It uses a green-on-dark terminal style for readability.
+
+### Console controls
+
+- **Clear** — Clears the current log output from the console display.
+- **Close** — Closes and hides the floating console window.
+
+<Note>
+  The debug console window is moveable and resizable. Click and drag the title bar to reposition it on screen, and drag the edges or corners to resize it. This lets you monitor logs while interacting with other parts of the app.
+</Note>
+
+## Migration actions
+
+The migration section contains utilities for updating data formats in the Google Sheets backend. Each migration is a one-time operation that transforms existing records to a new data structure.
+
+### Available migrations
+
+<CardGroup cols={2}>
+  <Card title="Migrar Rangos de Años" icon="calendar">
+    Migrates year range data to the current format used by the catalog. Run this after updating the year range schema for vehicle records.
+  </Card>
+  <Card title="Migrar Timestamps" icon="clock">
+    Migrates timestamp values across records to the current timestamp format. Run this when normalizing date/time storage across catalog entries.
+  </Card>
+</CardGroup>
+
+### Running a migration
+
+<Steps>
+  <Step title="Open Developer Tools">
+    Click **Desarrollador** in the side menu.
+  </Step>
+  <Step title="Locate the migration action">
+    Find the migration button in the Migration Actions section of the modal.
+  </Step>
+  <Step title="Click the migration button">
+    Click **Migrar Rangos de Años** or **Migrar Timestamps** as needed.
+  </Step>
+  <Step title="Review the status">
+    The tool displays a status message after execution indicating whether the migration succeeded or encountered an error.
+  </Step>
+</Steps>
+
+<Warning>
+  Migrations modify data directly in the Google Sheets backend. They are not reversible through the UI. Before running a migration, confirm that you are operating on the correct environment and that the data format change is intentional. Running a migration more than once on already-migrated data may produce unexpected results.
+</Warning>

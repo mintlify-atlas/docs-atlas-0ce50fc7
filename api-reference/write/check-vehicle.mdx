@@ -1,0 +1,83 @@
+---
+title: "Check vehicle"
+description: "Search for existing vehicle records matching a given make, model, year, ignition type, category, and applicable versions."
+---
+
+Before adding a new cut record, use `checkVehicle` to determine whether a matching vehicle already exists in the catalog. The server returns all corte records that match the provided vehicle criteria so you can decide whether to create a new entry or update an existing one.
+
+**Endpoint:** `WRITE` service
+
+**Action:** `checkVehicle`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"checkVehicle"`.
+</ParamField>
+
+<ParamField path="payload.marca" type="string" required>
+  Vehicle make (e.g., `"Toyota"`).
+</ParamField>
+
+<ParamField path="payload.modelo" type="string" required>
+  Vehicle model (e.g., `"Corolla"`).
+</ParamField>
+
+<ParamField path="payload.anoDesde" type="string" required>
+  Starting model year (e.g., `"2018"`).
+</ParamField>
+
+<ParamField path="payload.tipoEncendido" type="string" required>
+  Ignition type (e.g., `"Convencional"` or `"Push Button"`).
+</ParamField>
+
+<ParamField path="payload.categoria" type="string" required>
+  Vehicle category (e.g., `"Automóviles"`).
+</ParamField>
+
+<ParamField path="payload.versionesAplicables" type="string">
+  Optional version or trim specifier for the vehicle (e.g., `"XLE, XSE"`).
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="matches" type="array">
+  Array of corte objects that match the search criteria. Returns an empty array if no matches are found. Each object follows the full corte schema including all cut point fields, image IDs, and community vote counts.
+</ResponseField>
+
+## Example
+
+```javascript
+const WRITE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzP3RwEAqxJN8xzrqxjlsChx4xDgRuvpW-ygWM9teMHM0hWl0DDx91gR3TTR832BWakQ/exec';
+
+const response = await fetch(WRITE_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'checkVehicle',
+    payload: {
+      marca: 'Toyota',
+      modelo: 'Corolla',
+      anoDesde: '2018',
+      tipoEncendido: 'Convencional',
+      categoria: 'Automóviles',
+      versionesAplicables: 'XLE'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  if (result.matches.length > 0) {
+    console.log('Existing vehicle found:', result.matches[0].id);
+    // Offer user option to update this vehicle
+  } else {
+    console.log('No existing record — safe to create new vehicle');
+  }
+}
+```

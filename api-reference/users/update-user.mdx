@@ -1,0 +1,68 @@
+---
+title: "Update user"
+description: "Update a user's full name, role, or account status."
+---
+
+Modifies an existing user account's full name, role assignment, or active status. This action is used by supervisors and administrators to manage team members.
+
+**Endpoint:** `USERS` service
+
+**Action:** `updateUser`
+
+<Note>
+  To change a user's password, use the `changePassword` action instead. To let a user update their own name, use `updateProfile`.
+</Note>
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"updateUser"`.
+</ParamField>
+
+<ParamField path="payload.ID" type="number" required>
+  The ID of the user to update.
+</ParamField>
+
+<ParamField path="payload.Nombre_Completo" type="string" required>
+  The updated full display name for the user.
+</ParamField>
+
+<ParamField path="payload.Rol" type="string" required>
+  The updated role assignment. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+</ParamField>
+
+<ParamField path="payload.Estado" type="string" required>
+  The updated account status. Either `"Activo"` or `"Inactivo"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
+
+const response = await fetch(USERS_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'updateUser',
+    payload: {
+      ID: 12,
+      Nombre_Completo: 'María A. García',
+      Rol: 'Supervisor',
+      Estado: 'Activo'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('User 12 updated successfully');
+}
+```

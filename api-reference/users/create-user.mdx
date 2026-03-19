@@ -1,0 +1,90 @@
+---
+title: "Create user"
+description: "Create a new user account with a specified role, status, and credentials."
+---
+
+Creates a new user account in the system. Only users with `Supervisor` or `Jefe` roles should have access to this action. The new account is active immediately upon creation.
+
+**Endpoint:** `USERS` service
+
+**Action:** `createUser`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"createUser"`.
+</ParamField>
+
+<ParamField path="payload.Nombre_Usuario" type="string" required>
+  The login username for the new account. Must be unique.
+</ParamField>
+
+<ParamField path="payload.Nombre_Completo" type="string" required>
+  The new user's full display name.
+</ParamField>
+
+<ParamField path="payload.Contrasena" type="string" required>
+  The initial password for the account.
+</ParamField>
+
+<ParamField path="payload.Rol" type="string" required>
+  The role to assign. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+</ParamField>
+
+<ParamField path="payload.Estado" type="string" required>
+  Initial account status. Either `"Activo"` or `"Inactivo"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  The newly created user object.
+  <Expandable title="user properties">
+    <ResponseField name="ID" type="number">
+      The system-assigned ID for the new user.
+    </ResponseField>
+    <ResponseField name="Nombre_Usuario" type="string">
+      The user's login username.
+    </ResponseField>
+    <ResponseField name="Nombre_Completo" type="string">
+      The user's full name.
+    </ResponseField>
+    <ResponseField name="Rol" type="string">
+      The assigned role.
+    </ResponseField>
+    <ResponseField name="Estado" type="string">
+      The account status.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
+
+const response = await fetch(USERS_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'createUser',
+    payload: {
+      Nombre_Usuario: 'mgarcia',
+      Nombre_Completo: 'María García',
+      Contrasena: 'initialPass123',
+      Rol: 'Tecnico',
+      Estado: 'Activo'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('New user created with ID:', result.user.ID);
+}
+```

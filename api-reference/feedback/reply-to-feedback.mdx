@@ -1,0 +1,64 @@
+---
+title: "Reply to feedback"
+description: "Post an admin reply to a problem report or contact form submission."
+---
+
+Attaches a reply from an administrator or supervisor to an existing feedback item. The reply is stored alongside the original submission and is visible in the feedback management panel.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `replyToFeedback`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"replyToFeedback"`.
+</ParamField>
+
+<ParamField path="payload.itemId" type="number" required>
+  The ID of the feedback item to reply to.
+</ParamField>
+
+<ParamField path="payload.itemType" type="string" required>
+  The type of the feedback item. Either `"problem_report"` or `"contact"`.
+</ParamField>
+
+<ParamField path="payload.replyText" type="string" required>
+  The reply message to attach to the feedback item.
+</ParamField>
+
+<ParamField path="payload.responderName" type="string" required>
+  The full name of the administrator or supervisor writing the reply.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'replyToFeedback',
+    payload: {
+      itemId: 15,
+      itemType: 'problem_report',
+      replyText: 'Gracias por el reporte. Hemos corroborado el color del cable y actualizamos el registro.',
+      responderName: 'Ana Torres'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Reply saved to feedback item 15');
+}
+```

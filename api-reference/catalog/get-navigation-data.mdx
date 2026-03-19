@@ -1,0 +1,71 @@
+---
+title: "Get navigation data"
+description: "Retrieve category counts, brand lists, sorted categories, and logo mappings for building the catalog navigation UI."
+---
+
+Returns lightweight navigation metadata used to render the catalog's sidebar and filter controls. Unlike `getCatalogData`, this action does not return full corte records — only the counts and brand lists needed to build navigation.
+
+**Endpoint:** `CATALOG` service
+
+**Action:** `getNavigationData`
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getNavigationData"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="source" type="string">
+  Indicates the data source. Either `"cache"` or `"spreadsheet"`.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="categoryCounts" type="object">
+      A map of category name to the number of vehicle records in that category. For example: `{ "Automóviles": 142, "SUVs": 87 }`.
+    </ResponseField>
+    <ResponseField name="marcas" type="array">
+      Alphabetically sorted list of all vehicle makes (brand strings) present in the catalog.
+    </ResponseField>
+    <ResponseField name="sortedCategories" type="array">
+      Ordered list of category name strings used to determine tab/filter display order.
+    </ResponseField>
+    <ResponseField name="logos" type="array">
+      Brand logo entries for rendering make icons next to navigation items.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const CATALOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxenVjZe9C8-0RiYKLxpGfQtobRzydBke44IM4NdNNjh5VRdlB91Ce9dWvQ2xnDFXk0/exec';
+
+const response = await fetch(CATALOG_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getNavigationData', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const { categoryCounts, marcas, sortedCategories } = result.data;
+
+  // Render category tabs with counts
+  sortedCategories.forEach(cat => {
+    console.log(`${cat}: ${categoryCounts[cat]} records`);
+  });
+
+  // Populate brand filter dropdown
+  console.log('Available makes:', marcas);
+}
+```

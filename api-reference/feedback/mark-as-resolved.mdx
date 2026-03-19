@@ -1,0 +1,48 @@
+---
+title: "Mark as resolved"
+description: "Mark a feedback item as resolved after the reported issue has been addressed."
+---
+
+Updates the resolved status of a feedback item to `true`. Use this after an admin has reviewed and addressed a problem report or contact message. Resolved items remain in the system for audit purposes.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `markAsResolved`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"markAsResolved"`.
+</ParamField>
+
+<ParamField path="payload.itemId" type="number" required>
+  The ID of the feedback item to mark as resolved.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'markAsResolved',
+    payload: { itemId: 15 }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Feedback item 15 marked as resolved');
+  // Update UI to show resolved badge
+}
+```

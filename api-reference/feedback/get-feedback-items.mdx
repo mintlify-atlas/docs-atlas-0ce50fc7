@@ -1,0 +1,83 @@
+---
+title: "Get feedback items"
+description: "Retrieve all problem reports and contact form submissions for admin review."
+---
+
+Returns all feedback items stored in the system, including problem reports and contact form submissions. This action is intended for use by supervisors and administrators in the feedback management panel.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `getFeedbackItems`
+
+<Warning>
+  This action is role-restricted. Only users with `Supervisor` or `Jefe` roles should call this endpoint.
+</Warning>
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getFeedbackItems"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Array of feedback item objects.
+  <Expandable title="feedback item properties">
+    <ResponseField name="id" type="number">
+      Unique identifier for the feedback item.
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      The type of feedback. Either `"problem_report"` or `"contact"`.
+    </ResponseField>
+    <ResponseField name="subject" type="string">
+      Short subject or title for the feedback item.
+    </ResponseField>
+    <ResponseField name="content" type="string">
+      The full message or problem description.
+    </ResponseField>
+    <ResponseField name="userId" type="number">
+      ID of the user who submitted the feedback.
+    </ResponseField>
+    <ResponseField name="userName" type="string">
+      Display name of the submitting user.
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO timestamp of when the feedback was submitted.
+    </ResponseField>
+    <ResponseField name="reply" type="string | null">
+      Admin reply text, or `null` if the item has not been replied to yet.
+    </ResponseField>
+    <ResponseField name="isResolved" type="boolean">
+      Whether the feedback item has been marked as resolved.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getFeedbackItems', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const unresolved = result.data.filter(item => !item.isResolved);
+  console.log(`${unresolved.length} unresolved feedback items`);
+
+  const problemReports = result.data.filter(item => item.type === 'problem_report');
+  const contactMessages = result.data.filter(item => item.type === 'contact');
+}
+```

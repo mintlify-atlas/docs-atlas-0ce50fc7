@@ -1,0 +1,74 @@
+---
+title: "Add supplementary info"
+description: "Attach door unlock wiring, power cable, and important notes to an existing vehicle record."
+---
+
+Adds or updates supplementary installation information for an existing vehicle record. This includes door aperture wiring, power supply cable details, and any important installation notes. Images are uploaded as base64 data URLs.
+
+**Endpoint:** `WRITE` service
+
+**Action:** `addSupplementaryInfo`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"addSupplementaryInfo"`.
+</ParamField>
+
+<ParamField path="payload.vehicleId" type="number" required>
+  The ID of the vehicle record to update.
+</ParamField>
+
+<ParamField path="payload.apertura" type="string" required>
+  Description of the door aperture/unlock wiring (color, connector location).
+</ParamField>
+
+<ParamField path="payload.cableAlimen" type="string" required>
+  Description of the power supply cable (color, location, connector).
+</ParamField>
+
+<ParamField path="payload.notaImportante" type="string" required>
+  Any important installation notes or warnings for this vehicle.
+</ParamField>
+
+<ParamField path="payload.imgApertura" type="string | null">
+  Base64 data URL of a photo showing the aperture wiring location. Pass `null` to skip.
+</ParamField>
+
+<ParamField path="payload.imgCableAlimen" type="string | null">
+  Base64 data URL of a photo showing the power cable location. Pass `null` to skip.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const WRITE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzP3RwEAqxJN8xzrqxjlsChx4xDgRuvpW-ygWM9teMHM0hWl0DDx91gR3TTR832BWakQ/exec';
+
+const response = await fetch(WRITE_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'addSupplementaryInfo',
+    payload: {
+      vehicleId: 42,
+      apertura: 'Cable verde, conector de 8 pines debajo del volante',
+      cableAlimen: 'Cable rojo grueso junto al fusible principal',
+      notaImportante: 'Desconectar batería antes de intervenir el sistema de airbags',
+      imgApertura: 'data:image/jpeg;base64,/9j/4AAQ...',
+      imgCableAlimen: null
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Supplementary info saved for vehicle 42');
+}
+```

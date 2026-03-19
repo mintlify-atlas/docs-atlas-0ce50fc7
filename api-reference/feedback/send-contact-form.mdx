@@ -1,0 +1,64 @@
+---
+title: "Send contact form"
+description: "Submit a general contact message from a user to the GPSpedia support team."
+---
+
+Sends a contact form message on behalf of a logged-in user. Contact submissions are stored and visible to administrators in the feedback panel alongside problem reports.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `sendContactForm`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"sendContactForm"`.
+</ParamField>
+
+<ParamField path="payload.name" type="string" required>
+  The sender's full name.
+</ParamField>
+
+<ParamField path="payload.email" type="string" required>
+  The sender's email address for reply purposes.
+</ParamField>
+
+<ParamField path="payload.message" type="string" required>
+  The message body.
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the logged-in user submitting the form.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'sendContactForm',
+    payload: {
+      name: 'Carlos Mejía',
+      email: 'carlos@taller.com',
+      message: '¿Cuándo van a agregar datos para vehículos eléctricos?',
+      userId: 7
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Message sent successfully');
+}
+```

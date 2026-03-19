@@ -1,0 +1,107 @@
+---
+title: "Adding records"
+description: "Step-by-step guide to contributing new vehicle cut points and supplementary installation data to the GPSpedia catalog."
+---
+
+Any authorized contributor can submit new vehicle records to the GPSpedia catalog. Submissions go through a three-stage wizard that checks for duplicates, captures cut point data, and optionally collects supplementary installation information.
+
+## Who can add records
+
+Record submission is available to all logged-in users who have been granted contributor access. If you do not see **Agregar Nuevo** in the side menu, your account does not yet have contributor permissions. Contact your administrator to request access.
+
+## Opening the add-record wizard
+
+There are two ways to reach the form:
+
+1. Open the side menu and tap **Agregar Nuevo**.
+2. Navigate directly to `add_cortes.html` in your browser.
+
+## Submission walkthrough
+
+The wizard has three stages. Stages 1 and 2 are required. Stage 3 is optional.
+
+<Steps>
+  <Step title="Stage 1: Vehicle verification">
+    Fill in the vehicle information fields:
+
+    | Field | Description |
+    |---|---|
+    | **Marca** | Vehicle brand (e.g., Toyota, Ford) |
+    | **Modelo** | Model name (e.g., Hilux, Ranger) |
+    | **Año Desde** | First production year this record applies to |
+    | **Tipo de Encendido** | Ignition type (conventional, push-button, etc.) |
+    | **Categoría** | Vehicle category (car, truck, motorcycle, etc.) |
+    | **Versiones Aplicables** | Equipment trims or versions this cut applies to |
+
+    As you type, the form queries the catalog for phonetically similar entries using fuzzy matching (Levenshtein distance). If the system detects a likely spelling variant, it displays a suggestion below the field:
+
+    > *Quizás quisiste decir: Toyota*
+
+    Tap the suggestion to apply it. This helps keep brand and model names consistent across the catalog.
+
+    Once you complete the fields, tap **Verificar** to check whether a matching vehicle already exists.
+  </Step>
+  <Step title="Stage 1.5: Match review">
+    If the verification finds existing records that are similar to the vehicle you entered, a list of matches is shown. You must decide how to proceed:
+
+    <Columns cols={3}>
+      <Card title="Add cut to existing" icon="plus">
+        Attach your new cut point to an existing vehicle record. Use this when the vehicle already exists but is missing this particular cut.
+      </Card>
+      <Card title="Add supplementary info" icon="info">
+        Add supporting data (cable feeds, aperture notes, important warnings) to an existing record without creating a new cut entry.
+      </Card>
+      <Card title="Create new" icon="file-plus">
+        Start a brand-new vehicle record. Use this only when you are certain the vehicle is not already in the catalog.
+      </Card>
+    </Columns>
+
+    If no matches are found, the wizard advances automatically to Stage 2.
+  </Step>
+  <Step title="Stage 2: Cut point data">
+    Enter the details for the cut point. The following fields are required:
+
+    | Field | Description |
+    |---|---|
+    | **Tipo de Corte 1** | Type of cut (power, ground, ignition, etc.) |
+    | **Configuración Relay 1** | Relay wiring configuration for this cut |
+    | **Ubicación del Corte 1** | Physical location of the cut on the vehicle |
+    | **Color de Cable del Corte 1** | Wire color at the cut point |
+    | **Imagen del Corte 1** | Photo of the cut location (required) |
+
+    If you are creating a new vehicle record (not adding to an existing one), you must also upload an **Imagen del Vehículo** — a representative photo of the vehicle.
+
+    Tap **Guardar Corte** when all required fields are complete.
+  </Step>
+  <Step title="Stage 3: Supplementary info (optional)">
+    After saving the cut point, you can attach additional installation data to the record. All sections in this stage are optional.
+
+    <AccordionGroup>
+      <Accordion title="Apertura">
+        Notes or diagrams related to opening or disassembling the vehicle to reach the cut location.
+      </Accordion>
+      <Accordion title="Cable de Alimentación">
+        Information about the power feed cable, including location, color, and gauge.
+      </Accordion>
+      <Accordion title="Nota Importante">
+        Any critical warnings or caveats that other installers should know before working on this vehicle.
+      </Accordion>
+    </AccordionGroup>
+
+    Each section also accepts supporting images. Tap **Finalizar** when done, or skip the entire stage by tapping the skip link. Either action returns you to the home screen.
+  </Step>
+</Steps>
+
+## Anti-duplication check
+
+The `checkVehicle` function compares your Stage 1 input against every existing record in the catalog. It matches on brand, model, year range, ignition type, and equipment version. When it finds a close match, it surfaces those records in Stage 1.5 so you can attach your contribution to an existing entry instead of creating a duplicate.
+
+<Warning>
+  Do not create a new vehicle record if a matching entry already exists. Use the **Add cut to existing** option in Stage 1.5 to contribute your cut point to the correct record. Duplicate entries reduce catalog quality and make it harder for other installers to find reliable data.
+</Warning>
+
+## Contributor attribution
+
+<Note>
+  The **Colaborador** field is populated automatically from your session name. You do not need to enter your name manually. Make sure you are signed in with your correct account before submitting.
+</Note>

@@ -1,0 +1,114 @@
+---
+title: "User management"
+description: "Create, edit, and delete user accounts in GPSpedia."
+---
+
+User management in GPSpedia is controlled by role permissions. Jefes have full control over all users, while Supervisors can manage Tecnico-level accounts.
+
+## Who can manage users
+
+| Action | Supervisor | Jefe |
+|---|:---:|:---:|
+| View Tecnico users | ✓ | ✓ |
+| View all users | — | ✓ |
+| Edit Tecnico users | ✓ | ✓ |
+| Edit any user | — | ✓ |
+| Create new users | — | ✓ |
+| Delete users | — | ✓ |
+
+## Navigate to user management
+
+<Steps>
+  <Step title="Open the side menu">
+    Click the menu icon to expand the side navigation panel.
+  </Step>
+  <Step title="Select Mi Perfil / Usuarios">
+    Click **Mi Perfil / Usuarios** in the side menu to open the user management table.
+  </Step>
+</Steps>
+
+## The user table
+
+The user table lists all accounts visible to your role. Each row shows:
+
+- **ID** — Internal account identifier.
+- **Nombre de Usuario** — The account's permanent username used for login.
+- **Nombre Completo** — The user's display name shown in logs and catalog contributions.
+- **Rol** — The assigned role: Tecnico, Supervisor, or Jefe.
+- **Estado** — Account status: active or inactive.
+
+The list is filtered by your role. Supervisors see only Tecnico users. Jefes see all users.
+
+## Creating a user
+
+Only Jefes can create new user accounts.
+
+<Steps>
+  <Step title="Open user management">
+    Navigate to **Mi Perfil / Usuarios** from the side menu.
+  </Step>
+  <Step title="Click Nuevo Usuario">
+    Click **Nuevo Usuario** (New User) to open the creation form.
+  </Step>
+  <Step title="Fill in the user details">
+    Complete the following required fields:
+    - **Nombre de Usuario** — The login username. This cannot be changed after creation.
+    - **Nombre Completo** — The user's full display name.
+    - **Contraseña** — Initial password for the account.
+    - **Rol** — Select Tecnico, Supervisor, or Jefe.
+    - **Estado** — Set to active to allow immediate login.
+  </Step>
+  <Step title="Save the new user">
+    Click **Guardar** to create the account. The new user will appear in the table immediately.
+  </Step>
+</Steps>
+
+<Note>
+  The username (Nombre de Usuario) is set at creation and cannot be changed afterward. Choose carefully — if a username must change, the account must be deleted and recreated.
+</Note>
+
+## Editing a user
+
+Jefes can edit any user. Supervisors can edit Tecnico users only.
+
+<Steps>
+  <Step title="Locate the user">
+    Find the user in the table. Use the role filter if the list is long.
+  </Step>
+  <Step title="Open the edit form">
+    Click the edit icon or action button on the user's row.
+  </Step>
+  <Step title="Update the fields">
+    You can modify:
+    - **Nombre Completo** — Update the display name.
+    - **Rol** — Change the user's role (Jefe only).
+    - **Estado** — Toggle the account between active and inactive.
+  </Step>
+  <Step title="Save changes">
+    Click **Guardar** to apply the updates.
+  </Step>
+</Steps>
+
+## Deactivating a user
+
+If a user should no longer have access but their account history needs to be preserved, set their **Estado** to inactive instead of deleting the account. Inactive users cannot log in.
+
+## Deleting a user
+
+Only Jefes can delete user accounts.
+
+<Steps>
+  <Step title="Locate the user">
+    Find the user's row in the table.
+  </Step>
+  <Step title="Click the delete action">
+    Click the delete icon on the user's row.
+  </Step>
+  <Step title="Confirm deletion">
+    Confirm the deletion in the prompt. The action cannot be undone.
+  </Step>
+</Steps>
+
+<Warning>
+  Deleting a user is permanent. However, all cut point records, votes, and contributions made by that user remain in the catalog. Their **Nombre Completo** may still appear in activity logs and on catalog entries they contributed.
+</Warning>

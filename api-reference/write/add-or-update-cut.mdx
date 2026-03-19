@@ -1,0 +1,127 @@
+---
+title: "Add or update cut"
+description: "Add a new cut point record to the catalog, optionally creating a new vehicle entry at the same time."
+---
+
+Adds a cut point record to the catalog. If the vehicle does not yet exist, pass `vehicleId: null` along with a `vehicleData` object to create both the vehicle and the cut in a single request. If the vehicle already exists, pass its `vehicleId` and omit `vehicleData`.
+
+**Endpoint:** `WRITE` service
+
+**Action:** `addOrUpdateCut`
+
+<Note>
+  Run `checkVehicle` before this action to determine whether you should create a new vehicle or attach the cut to an existing one.
+</Note>
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"addOrUpdateCut"`.
+</ParamField>
+
+<ParamField path="payload.vehicleId" type="number | null" required>
+  The ID of an existing vehicle to attach the cut to, or `null` to create a new vehicle.
+</ParamField>
+
+<ParamField path="payload.vehicleData" type="object">
+  Required when `vehicleId` is `null`. Omit when attaching to an existing vehicle.
+  <Expandable title="vehicleData properties">
+    <ParamField path="marca" type="string" required>
+      Vehicle make.
+    </ParamField>
+    <ParamField path="modelo" type="string" required>
+      Vehicle model.
+    </ParamField>
+    <ParamField path="anoDesde" type="string" required>
+      Starting model year.
+    </ParamField>
+    <ParamField path="tipoEncendido" type="string" required>
+      Ignition type (e.g., `"Convencional"`, `"Push Button"`).
+    </ParamField>
+    <ParamField path="categoria" type="string" required>
+      Vehicle category.
+    </ParamField>
+    <ParamField path="versionesAplicables" type="string">
+      Applicable trims or versions.
+    </ParamField>
+    <ParamField path="imagenVehiculo" type="string">
+      Base64 data URL of the vehicle photo (e.g., `"data:image/jpeg;base64,..."`).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="payload.cutData" type="object" required>
+  The cut point details to add.
+  <Expandable title="cutData properties">
+    <ParamField path="tipoCorte1" type="string" required>
+      Cut type. One of `"Bomba de Combustible"`, `"Señal al Botón"`, `"Corte de Ición"`, or `"Apertura de Puertas"`.
+    </ParamField>
+    <ParamField path="configRelay1" type="string" required>
+      Relay configuration label for this cut.
+    </ParamField>
+    <ParamField path="ubicacionCorte1" type="string" required>
+      Physical location description of the cut point.
+    </ParamField>
+    <ParamField path="colorCableCorte1" type="string" required>
+      Wire color at the cut point.
+    </ParamField>
+    <ParamField path="imgCorte1" type="string">
+      Base64 data URL of the cut point photo.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="payload.colaborador" type="string" required>
+  Name of the technician contributing this cut record.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="vehicleId" type="number">
+  The ID of the vehicle that was created or updated.
+</ResponseField>
+
+## Example
+
+```javascript
+const WRITE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzP3RwEAqxJN8xzrqxjlsChx4xDgRuvpW-ygWM9teMHM0hWl0DDx91gR3TTR832BWakQ/exec';
+
+// Adding a cut to a new vehicle
+const response = await fetch(WRITE_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'addOrUpdateCut',
+    payload: {
+      vehicleId: null,
+      vehicleData: {
+        marca: 'Toyota',
+        modelo: 'Corolla',
+        anoDesde: '2020',
+        tipoEncendido: 'Push Button',
+        categoria: 'Automóviles',
+        versionesAplicables: 'XSE',
+        imagenVehiculo: 'data:image/jpeg;base64,/9j/4AAQ...'
+      },
+      cutData: {
+        tipoCorte1: 'Bomba de Combustible',
+        configRelay1: 'NA5',
+        ubicacionCorte1: 'Bajo el asiento trasero, conector gris 4 pines',
+        colorCableCorte1: 'Verde con blanco',
+        imgCorte1: 'data:image/jpeg;base64,/9j/4AAQ...'
+      },
+      colaborador: 'Juan Díaz'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Vehicle ID:', result.vehicleId);
+}
+```

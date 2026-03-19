@@ -1,0 +1,111 @@
+---
+title: "API Reference"
+description: "Complete reference for all GPSpedia API endpoints, request formats, and response structures."
+---
+
+GPSpedia's backend is powered by Google Apps Script web applications, each exposing a single HTTP endpoint. All API communication uses a unified POST-based protocol — you send a JSON body specifying an `action` and a `payload`, and receive a structured JSON response.
+
+## Services
+
+Each logical domain maps to a dedicated service endpoint:
+
+<CardGroup cols={2}>
+  <Card title="AUTH" icon="lock">
+    Handles login and session validation.
+  </Card>
+  <Card title="CATALOG" icon="book">
+    Provides vehicle cut points, relay configs, tutorials, navigation data, and dropdowns.
+  </Card>
+  <Card title="WRITE" icon="pen">
+    Creates and updates vehicle cut records and supplementary information.
+  </Card>
+  <Card title="USERS" icon="users">
+    Manages user accounts, roles, and credentials.
+  </Card>
+  <Card title="FEEDBACK" icon="message-circle">
+    Records likes, problem reports, contact form submissions, and admin replies.
+  </Card>
+</CardGroup>
+
+## Universal request format
+
+Every request — regardless of service or action — uses this exact shape:
+
+```javascript
+fetch(SERVICE_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'actionName',
+    payload: { /* action-specific parameters */ }
+  }),
+  redirect: 'follow'
+});
+```
+
+<Note>
+  The `Content-Type` header must be `text/plain` (not `application/json`). Google Apps Script web apps require this to avoid CORS preflight requests.
+</Note>
+
+## Universal response format
+
+All endpoints return JSON with a `status` field:
+
+**Success**
+```json
+{
+  "status": "success",
+  "...": "action-specific fields"
+}
+```
+
+**Error**
+```json
+{
+  "status": "error",
+  "message": "Human-readable error description",
+  "details": {
+    "errorMessage": "Internal error detail"
+  }
+}
+```
+
+## Action-to-service mapping
+
+| Action | Service |
+|---|---|
+| `login` | AUTH |
+| `validateSession` | AUTH |
+| `getCatalogData` | CATALOG |
+| `getNavigationData` | CATALOG |
+| `getDropdownData` | CATALOG |
+| `getSuggestion` | CATALOG |
+| `checkVehicle` | WRITE |
+| `addOrUpdateCut` | WRITE |
+| `addSupplementaryInfo` | WRITE |
+| `getUsers` | USERS |
+| `createUser` | USERS |
+| `updateUser` | USERS |
+| `deleteUser` | USERS |
+| `changePassword` | USERS |
+| `updateProfile` | USERS |
+| `recordLike` | FEEDBACK |
+| `reportProblem` | FEEDBACK |
+| `sendContactForm` | FEEDBACK |
+| `getFeedbackItems` | FEEDBACK |
+| `replyToFeedback` | FEEDBACK |
+| `markAsResolved` | FEEDBACK |
+| `getActivityLogs` | FEEDBACK |
+
+## Error handling
+
+Always check `result.status` before accessing response data. A non-`200` HTTP status code is not guaranteed — Apps Script may return HTTP 200 with `status: 'error'` in the body.
+
+```javascript
+const result = await response.json();
+if (result.status !== 'success') {
+  console.error(result.message, result.details?.errorMessage);
+  return;
+}
+// safe to use result data
+```

@@ -1,0 +1,67 @@
+---
+title: "Installing as a PWA"
+description: "How to install GPSpedia as a Progressive Web App on Android and iOS so it runs like a native app."
+---
+
+GPSpedia is a Progressive Web App (PWA). Installing it adds an icon to your device's home screen and allows the app to run in a dedicated window without browser navigation bars — similar to a native app. A service worker also caches key resources so the app remains usable when your connection is intermittent.
+
+<Note>
+  PWA installation is entirely optional. GPSpedia works in any modern browser without installation. Install it only if you prefer the full-screen experience or need reliable offline access.
+</Note>
+
+## Installing on Android (Chrome)
+
+<Steps>
+  <Step title="Open GPSpedia in Chrome">
+    Navigate to the GPSpedia URL in Google Chrome on your Android device.
+  </Step>
+  <Step title="Tap the Install button">
+    When Chrome detects that the app meets PWA installability criteria, an **Instalar** button appears in the header. Tap it.
+
+    If the button is not visible, you can also tap the three-dot menu in Chrome and select **Add to Home Screen**.
+  </Step>
+  <Step title="Confirm the installation prompt">
+    Chrome displays a native install prompt. Tap **Install** (or **Add**) to confirm. The app icon is added to your home screen.
+  </Step>
+  <Step title="Launch from the home screen">
+    Tap the GPSpedia icon on your home screen. The app opens in standalone mode — no address bar or browser tabs.
+  </Step>
+</Steps>
+
+## Installing on iOS (Safari)
+
+<Steps>
+  <Step title="Open GPSpedia in Safari">
+    Navigate to the GPSpedia URL in Safari on your iPhone or iPad. The browser-triggered install prompt is not available on iOS — you must use the Share sheet instead.
+  </Step>
+  <Step title="Open the Share sheet">
+    Tap the **Share** icon (the box with an arrow pointing up) in the Safari toolbar.
+  </Step>
+  <Step title="Tap Add to Home Screen">
+    Scroll through the Share sheet options and tap **Add to Home Screen**.
+  </Step>
+  <Step title="Confirm">
+    Edit the name if desired, then tap **Add** in the top-right corner. The app icon appears on your home screen.
+  </Step>
+  <Step title="Launch from the home screen">
+    Tap the icon to open GPSpedia. It runs in fullscreen mode without Safari's browser chrome.
+  </Step>
+</Steps>
+
+## Offline behavior
+
+Once installed (or after your first visit), GPSpedia's service worker caches the application shell and static resources in the background. This means:
+
+- The app loads even when you have no internet connection.
+- Previously viewed records may be available from cache.
+- New records and real-time data require a connection to load.
+
+The service worker is registered automatically when you visit the site — no manual action is required.
+
+## Standalone mode
+
+When launched from the home screen, GPSpedia runs in standalone mode. There is no browser address bar, no tab strip, and no navigation buttons from the browser UI. Back navigation is handled entirely within the app (see [Browsing the catalog](/guides/browsing-catalog) for details on back navigation behavior).
+
+<Tip>
+  On mobile, you can refresh the app by pulling down from the top of the screen. Swipe down slowly until you have pulled more than roughly 150 px, then release. The page reloads and fetches the latest records. This gesture only works when you are already scrolled to the very top of the screen.
+</Tip>

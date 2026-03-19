@@ -1,0 +1,67 @@
+---
+title: "Get users"
+description: "Retrieve the list of user accounts, filtered by the requesting user's role."
+---
+
+Returns all user accounts visible to the current user. The server applies role-based filtering automatically — a `Tecnico` will only see their own account, while `Supervisor` and `Jefe` roles receive broader lists according to their access level.
+
+**Endpoint:** `USERS` service
+
+**Action:** `getUsers`
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getUsers"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Array of user objects.
+  <Expandable title="user object properties">
+    <ResponseField name="ID" type="number">
+      Unique identifier for the user.
+    </ResponseField>
+    <ResponseField name="Nombre_Usuario" type="string">
+      The user's login username.
+    </ResponseField>
+    <ResponseField name="Nombre_Completo" type="string">
+      The user's full display name.
+    </ResponseField>
+    <ResponseField name="Rol" type="string">
+      The user's assigned role. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+    </ResponseField>
+    <ResponseField name="Estado" type="string">
+      Account status. Either `"Activo"` or `"Inactivo"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
+
+const response = await fetch(USERS_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getUsers', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const activeUsers = result.data.filter(u => u.Estado === 'Activo');
+  console.log(`${activeUsers.length} active users`);
+
+  const technicians = result.data.filter(u => u.Rol === 'Tecnico');
+  console.log('Technicians:', technicians.map(u => u.Nombre_Completo));
+}
+```

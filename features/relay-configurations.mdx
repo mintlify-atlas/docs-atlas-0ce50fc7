@@ -1,0 +1,70 @@
+---
+title: "Relay configurations"
+description: "Browse and understand the standard 5-pin relay wiring configurations used in GPS tracking device installations."
+---
+
+A relay is an electrically operated switch used in GPS installations to control a high-current circuit (such as the fuel pump) from the low-current output of a GPS tracking device. GPSpedia maintains a catalog of named relay configurations — each one describes exactly how a standard 5-pin automotive relay should be wired for a specific installation function.
+
+## Relay pin reference
+
+All configurations in GPSpedia are based on the standard 5-pin automotive relay. Understanding each pin's role is essential for correct installation.
+
+<AccordionGroup>
+  <Accordion title="Pin 30 — Input (power source)">
+    The main power input to the relay. This pin connects to the circuit you want to control — for example, the wire going to the fuel pump. Current flows through Pin 30 to the output pins.
+  </Accordion>
+  <Accordion title="Pin 85 — Coil positive (trigger signal)">
+    The positive side of the relay coil. Connect this pin to the output wire from the GPS device that provides the trigger signal. When the GPS device activates this output, it energizes the coil.
+  </Accordion>
+  <Accordion title="Pin 86 — Coil negative (ground)">
+    The negative side of the relay coil. Connect to chassis ground. Together with Pin 85, this completes the coil circuit that activates the relay.
+  </Accordion>
+  <Accordion title="Pin 87a — Normally closed (common closed)">
+    The normally closed output. In the relay's default (un-energized) state, Pin 30 connects to Pin 87a, allowing current to flow. When the relay is activated, this connection opens.
+
+    Use Pin 87a for installations where the circuit should remain active by default and only be interrupted when the GPS device triggers the relay.
+  </Accordion>
+  <Accordion title="Pin 87 — Normally open (common open)">
+    The normally open output. In the relay's default state, this pin has no connection to Pin 30. When the relay is activated, Pin 30 connects to Pin 87, allowing current to flow.
+
+    Use Pin 87 for installations where the circuit should only be active when the GPS device triggers the relay.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+Most GPS immobilization installations use the **normally closed** configuration (Pin 87a): the fuel pump or ignition circuit runs through the relay uninterrupted during normal operation, and the GPS device opens the circuit to immobilize the vehicle.
+</Info>
+
+## Browsing relay configurations
+
+The **Relay** section of GPSpedia (accessible from the main navigation) lists all named configurations in the catalog. Each entry shows:
+
+- **Configuration name** — the identifier used in cut point records
+- **Function** — a description of what the relay achieves in this configuration
+- **Vehicle where used** — examples of vehicles that require this configuration
+- **Pin wiring table** — the complete pin assignment for this configuration
+- **Relay diagram image** — a visual wiring diagram (tap to open in full-resolution lightbox)
+- **Observations** — notes about special conditions or variations
+
+## Accessing relay info from a cut point
+
+You do not need to browse the Relay section separately. When viewing a cut point detail, the relay configuration name appears as a tappable link in the cut info section. Tapping it opens the **relay info modal** directly, showing the full pin diagram and wiring table for that specific configuration — without leaving the cut point detail view.
+
+<Steps>
+  <Step title="Open a cut point detail">
+    Navigate to a vehicle via the catalog or search and open its cut point detail modal.
+  </Step>
+  <Step title="Tap the relay configuration name">
+    In the cut info section, find the **relay configuration** field. Tap the configuration name — for example, **Relay NC Bomba**.
+  </Step>
+  <Step title="Review the relay info modal">
+    The relay info modal opens, showing the configuration name, the full pin wiring table, and the relay diagram image.
+  </Step>
+  <Step title="Open the diagram in the lightbox">
+    Tap the relay diagram image to open it in the high-resolution lightbox for a detailed view of the wiring.
+  </Step>
+</Steps>
+
+<Tip>
+Keep the relay info modal open on a second screen or print the diagram before starting the installation. Having the pin assignments visible while you work reduces wiring errors.
+</Tip>

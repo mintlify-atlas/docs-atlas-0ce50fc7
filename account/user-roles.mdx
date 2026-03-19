@@ -1,0 +1,77 @@
+---
+title: "User roles"
+description: "Understand the three role levels in GPSpedia and what each role can do."
+---
+
+GPSpedia uses a role-based access control (RBAC) system with three tiers. Each role inherits the capabilities of the roles below it in the hierarchy.
+
+## Role hierarchy
+
+```
+Jefe (Gefe)
+  └── Supervisor
+        └── Tecnico
+```
+
+The **Jefe** role sits at the top with full platform access. **Supervisor** handles team management. **Tecnico** is the standard working role for GPS installation professionals.
+
+## Role capabilities
+
+| Capability | Tecnico | Supervisor | Jefe |
+|---|:---:|:---:|:---:|
+| Browse the vehicle catalog | ✓ | ✓ | ✓ |
+| Add cut point records | ✓ | ✓ | ✓ |
+| Vote on cut point entries | ✓ | ✓ | ✓ |
+| Report data problems | ✓ | ✓ | ✓ |
+| Manage Tecnico users | — | ✓ | ✓ |
+| Manage all users | — | — | ✓ |
+| Create and delete users | — | — | ✓ |
+| Access Activity Dashboard | — | ✓ | ✓ |
+| Access Inbox | — | — | ✓ |
+| Access Developer Tools | — | — | ✓ |
+| Run data migrations | — | — | ✓ |
+
+## Role descriptions
+
+<CardGroup cols={3}>
+  <Card title="Tecnico" icon="wrench">
+    The standard role for GPS installation technicians. Tecnicos can browse the full vehicle catalog, add new cut point records, vote on existing entries, and report problems with specific data.
+  </Card>
+  <Card title="Supervisor" icon="users">
+    All Tecnico capabilities, plus the ability to manage Tecnico-level users within the platform. Supervisors can also access the Activity Dashboard to monitor team activity.
+  </Card>
+  <Card title="Jefe (Gefe)" icon="shield">
+    Full platform access. Jefes manage all users across all roles, access the Inbox for problem reports and contact messages, use Developer Tools, and run backend data migrations.
+  </Card>
+</CardGroup>
+
+## Role details
+
+### Tecnico
+
+Tecnicos are the everyday users of GPSpedia — GPS installation professionals consulting the platform for vehicle-specific wiring data.
+
+- **Catalog access:** Full read access to all vehicle records, cut point images, relay configurations, and installation guides.
+- **Contributing data:** Can add new cut point entries and relay records to the catalog.
+- **Voting:** Can upvote or flag cut point images and data entries to indicate accuracy.
+- **Problem reporting:** Can submit a problem report on any cut point image using the ⚠️ report button.
+
+### Supervisor
+
+Supervisors have all Tecnico capabilities and take on team management responsibilities.
+
+- **User management:** Can view, edit, and update Tecnico users. Cannot manage Supervisor or Jefe accounts.
+- **Activity Dashboard:** Can access the Dashboard to review recent platform activity across the team.
+
+### Jefe (Gefe)
+
+The Jefe role carries full administrative authority over the platform.
+
+- **User management:** Can create, edit, and delete users of any role, including other Supervisors.
+- **Inbox:** Receives and responds to problem reports and contact form messages.
+- **Developer Tools:** Access to the debug console and data migration utilities.
+- **Data migrations:** Can run `Migrar Rangos de Años` and `Migrar Timestamps` to update backend data formats.
+
+<Note>
+  Role assignment is made by a Jefe at the time of account creation. Roles can be updated afterward through the user management page, but only by a Jefe.
+</Note>

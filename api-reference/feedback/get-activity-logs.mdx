@@ -1,0 +1,70 @@
+---
+title: "Get activity logs"
+description: "Retrieve the system activity log for auditing user actions across the platform."
+---
+
+Returns a chronological log of user activity events recorded by the system. Activity logs capture actions such as logins, catalog edits, and feedback submissions, and are used by administrators to audit platform usage.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `getActivityLogs`
+
+<Warning>
+  This action is intended for administrators (`Jefe` role) only. Access should be restricted at the UI level.
+</Warning>
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getActivityLogs"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Array of activity log entry objects, ordered by timestamp.
+  <Expandable title="log entry properties">
+    <ResponseField name="timestamp" type="string">
+      ISO timestamp of when the activity occurred.
+    </ResponseField>
+    <ResponseField name="nombreUsuario" type="string">
+      Display name of the user who performed the action.
+    </ResponseField>
+    <ResponseField name="tipoActividad" type="string">
+      Category or type of the activity (e.g., `"Login"`, `"Corte Agregado"`, `"Problema Reportado"`).
+    </ResponseField>
+    <ResponseField name="detalle" type="string">
+      Human-readable detail string describing what occurred.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getActivityLogs', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log(`${result.data.length} activity log entries`);
+
+  // Show the 10 most recent events
+  const recent = result.data.slice(-10).reverse();
+  recent.forEach(entry => {
+    console.log(`[${entry.timestamp}] ${entry.nombreUsuario} — ${entry.tipoActividad}: ${entry.detalle}`);
+  });
+}
+```

@@ -1,0 +1,70 @@
+---
+title: "Get catalog data"
+description: "Retrieve the full vehicle cut point catalog including cortes, relay configurations, tutorials, logos, and sorted categories."
+---
+
+Returns the complete GPSpedia catalog in a single response. This is the primary data-loading action used to populate the main catalog view. Results may be served from an in-memory cache for performance.
+
+**Endpoint:** `CATALOG` service
+
+**Action:** `getCatalogData`
+
+## Request
+
+No payload required.
+
+<ParamField path="action" type="string" required>
+  Must be `"getCatalogData"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+<ResponseField name="source" type="string">
+  Indicates where the data was loaded from. Either `"cache"` or `"spreadsheet"`.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="cortes" type="array">
+      Array of vehicle cut point objects. Each object contains vehicle identification fields, one or more cut point configurations, supplementary wiring info, and community vote counts. See the [corte object reference](/api-reference/overview) for the full field list.
+    </ResponseField>
+    <ResponseField name="relay" type="array">
+      Array of relay configuration objects describing wiring diagrams used in cut installations.
+    </ResponseField>
+    <ResponseField name="tutoriales" type="array">
+      Array of tutorial objects covering topics such as ignition types and component identification.
+    </ResponseField>
+    <ResponseField name="logos" type="array">
+      Array of brand logo entries used to render make icons in the catalog UI.
+    </ResponseField>
+    <ResponseField name="sortedCategories" type="array">
+      Ordered list of vehicle category strings (e.g., `"Automóviles"`, `"SUVs"`) used for category tab rendering.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example
+
+```javascript
+const CATALOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxenVjZe9C8-0RiYKLxpGfQtobRzydBke44IM4NdNNjh5VRdlB91Ce9dWvQ2xnDFXk0/exec';
+
+const response = await fetch(CATALOG_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({ action: 'getCatalogData', payload: {} }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  const { cortes, relay, tutoriales, logos, sortedCategories } = result.data;
+  console.log(`Loaded ${cortes.length} cut records from ${result.source}`);
+
+  // Filter to a specific make
+  const toyotaCuts = cortes.filter(c => c.marca === 'Toyota');
+}
+```

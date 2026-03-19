@@ -1,0 +1,93 @@
+---
+title: "Vehicle catalog"
+description: "Browse the full catalog of vehicle cut points, tutorials, and relay configurations using a structured hierarchical navigation."
+---
+
+The vehicle catalog is the core of GPSpedia. It organizes thousands of GPS installation records by vehicle category, brand, model, equipment version, ignition type, and year range — letting you drill down from broad categories to the exact cut point data for a specific vehicle.
+
+## Catalog sections
+
+The catalog is divided into three main data sections, each accessible from the main navigation:
+
+<Columns cols={3}>
+  <Card title="Cortes" icon="scissors">
+    Vehicle cut point entries with cable locations, colors, relay configurations, and installation photos.
+  </Card>
+  <Card title="Tutoriales" icon="graduation-cap">
+    Step-by-step guides covering disassembly techniques, panel removal, and cable identification.
+  </Card>
+  <Card title="Relay" icon="bolt">
+    A browsable library of standard 5-pin relay wiring configurations used in vehicle security installations.
+  </Card>
+</Columns>
+
+## Navigation hierarchy
+
+Cut point data is organized in a strict hierarchy. Each level narrows the scope until you reach the exact vehicle record.
+
+```text
+Categories
+└── Brands
+    └── Models
+        └── Equipment versions  (skipped if only one exists)
+            └── Ignition types  (skipped if only one exists)
+                └── Year ranges
+                    └── Cut point detail
+```
+
+<Note>
+Equipment version and ignition type screens are skipped automatically when only one option exists for a given model. You move directly to the next relevant level.
+</Note>
+
+## Browsing the catalog
+
+<Steps>
+  <Step title="Select a category">
+    The home screen shows all available vehicle categories. Tap a category card — for example, **Autos**, **Motocicletas**, or **Camiones** — to see the brands within it.
+  </Step>
+  <Step title="Choose a brand">
+    Browse the brand cards for your chosen category. Each card shows the brand logo. Tap a brand to see its available models.
+  </Step>
+  <Step title="Select a model">
+    Model cards list the vehicle model names. Tap a model to continue.
+  </Step>
+  <Step title="Select an equipment version (if prompted)">
+    Some models have multiple equipment versions — for example, a base trim versus a luxury trim with different wiring. Select the version that matches your vehicle.
+  </Step>
+  <Step title="Select an ignition type (if prompted)">
+    If a model has cut point records for multiple ignition types (for example, conventional key ignition versus push-button start), select the correct type.
+  </Step>
+  <Step title="Select a year range">
+    Year range cards show the span of model years covered by each cut point record. Select the range that includes your vehicle's year.
+  </Step>
+  <Step title="View the cut point detail">
+    The detail modal opens with full cut point information: cable locations, colors, relay configuration, installation photos, and contributor credit.
+  </Step>
+</Steps>
+
+## Vehicle categories
+
+The catalog covers the following vehicle categories:
+
+<AccordionGroup>
+  <Accordion title="Autos">
+    Standard passenger cars and sedans. This is the largest category in the catalog and covers the widest range of brands and models.
+  </Accordion>
+  <Accordion title="Motocicletas">
+    Motorcycles and scooters. Wiring layouts differ significantly from automobiles — cut points are typically found near the ignition harness under the seat or fairing.
+  </Accordion>
+  <Accordion title="Camiones">
+    Trucks and commercial vehicles. Includes light trucks, pickup trucks, and medium-duty commercial vehicles.
+  </Accordion>
+  <Accordion title="Additional categories">
+    The catalog also includes SUVs, vans, and other vehicle types. The full list of categories is shown on the home screen and reflects what is currently available in the catalog.
+  </Accordion>
+</AccordionGroup>
+
+## Recently added carousel
+
+The home screen includes a **Recently Added** carousel at the top. This carousel shows the latest cut point entries added to the catalog, ordered by their timestamp. Use it to quickly spot newly contributed records without navigating the full hierarchy.
+
+<Tip>
+If you are looking for a recently published vehicle you heard about, check the Recently Added carousel before navigating through categories — it is often faster.
+</Tip>

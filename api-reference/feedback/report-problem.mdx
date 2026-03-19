@@ -1,0 +1,64 @@
+---
+title: "Report problem"
+description: "Submit a problem report for a specific vehicle record in the catalog."
+---
+
+Allows technicians to flag incorrect, incomplete, or outdated information on a vehicle record. Problem reports are visible to supervisors and administrators in the feedback management panel.
+
+**Endpoint:** `FEEDBACK` service
+
+**Action:** `reportProblem`
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"reportProblem"`.
+</ParamField>
+
+<ParamField path="payload.vehicleId" type="number" required>
+  The ID of the vehicle record being reported.
+</ParamField>
+
+<ParamField path="payload.problemText" type="string" required>
+  A description of the problem with the vehicle's cut information.
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the user submitting the report.
+</ParamField>
+
+<ParamField path="payload.userName" type="string" required>
+  The display name of the user submitting the report, used for activity logging.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  Always `"success"` on success.
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'reportProblem',
+    payload: {
+      vehicleId: 42,
+      problemText: 'El color de cable indicado no coincide con el vehículo real. En la unidad 2019 el cable es azul, no verde.',
+      userId: 7,
+      userName: 'Juan Díaz'
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('Problem report submitted');
+}
+```
