@@ -1,17 +1,23 @@
 ---
 title: "Delete user"
-description: "Permanently delete a user account from the system."
+description: "Permanently delete a user account. Requires sufficient role permissions."
 ---
 
-Permanently removes a user account. This action cannot be undone. Consider deactivating a user by setting their `Estado` to `"Inactivo"` via `updateUser` as a reversible alternative.
+Permanently deletes a user account by removing their row from the Users sheet. This action cannot be undone. All catalog contributions (cut points, votes, activity logs) attributed to the user remain in the system.
 
-**Endpoint:** `USERS` service
+**Endpoint:** `USERS` service — `https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec`
 
 **Action:** `deleteUser`
 
 <Warning>
-  User deletion is permanent. All session tokens for the deleted user are immediately invalidated. Activity logs referencing the user are retained for audit purposes.
+  Deletion is permanent. Consider setting a user to inactive via `updateUser` if you need to revoke access while preserving their account history.
 </Warning>
+
+| Deleter role | Who they can delete |
+|---|---|
+| `Desarrollador` | Any user |
+| `Gefe` / `Jefe` | `Supervisor`, `Tecnico` |
+| `Supervisor` | `Tecnico` only |
 
 ## Request
 
@@ -23,10 +29,18 @@ Permanently removes a user account. This action cannot be undone. Consider deact
   The ID of the user to delete.
 </ParamField>
 
+<ParamField path="payload.sessionToken" type="string" required>
+  The active session token of the user performing the deletion. Used to verify role permissions.
+</ParamField>
+
 ## Response
 
 <ResponseField name="status" type="string" required>
-  Always `"success"` on success.
+  `"success"` on success, `"error"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"Usuario eliminado."` on success.
 </ResponseField>
 
 ## Example
@@ -34,23 +48,23 @@ Permanently removes a user account. This action cannot be undone. Consider deact
 ```javascript
 const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
 
-// Show a confirmation dialog before calling this
-const confirmed = confirm('Are you sure you want to delete this user? This cannot be undone.');
+const session = JSON.parse(localStorage.getItem('gpsepedia_session'));
 
-if (confirmed) {
-  const response = await fetch(USERS_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({
-      action: 'deleteUser',
-      payload: { userId: 12 }
-    }),
-    redirect: 'follow'
-  });
+const response = await fetch(USERS_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'deleteUser',
+    payload: {
+      userId: 15,
+      sessionToken: session.SessionToken
+    }
+  }),
+  redirect: 'follow'
+});
 
-  const result = await response.json();
-  if (result.status === 'success') {
-    console.log('User deleted');
-  }
+const result = await response.json();
+if (result.status === 'success') {
+  console.log('User deleted successfully');
 }
 ```

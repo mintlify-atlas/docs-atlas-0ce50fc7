@@ -1,0 +1,92 @@
+---
+title: "Suggest year"
+description: "Submit a community vote to expand a vehicle entry's year range."
+---
+
+Allows users to suggest that a specific year should be added to a vehicle entry's year range. The change is applied automatically once **3 users** vote for the same year on the same vehicle — this threshold enforces community validation before data is modified.
+
+**Endpoint:** `FEEDBACK` service — `https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec`
+
+**Action:** `suggestYear`
+
+<Note>
+  Valid year range is 1980–2099. Suggestions outside this range are rejected with an error.
+</Note>
+
+<Warning>
+  The server checks for **anti-collision**: if the suggested year already falls within another entry for the same brand, model, and ignition type, the suggestion is rejected with a `"warning"` status and flagged for manual review. This prevents incorrect year-range merges across different vehicle generations.
+</Warning>
+
+## How it works
+
+1. The suggestion is recorded in the `SugerenciasAño` sheet.
+2. The server counts how many users have already voted for the same `vehicleId` + `newYear` combination.
+3. If the vote count is below 3, the response confirms how many more votes are needed.
+4. At 3 votes, the server extends the vehicle's `anoDesde` or `anoHasta` field to include the new year (if it doesn't already), subject to collision checking.
+5. The change is logged in the `ActividadUsuario` sheet with activity type `apply_year_suggestion`.
+
+## Request
+
+<ParamField path="action" type="string" required>
+  Must be `"suggestYear"`.
+</ParamField>
+
+<ParamField path="payload.vehicleId" type="number" required>
+  The ID of the vehicle entry whose year range should be extended.
+</ParamField>
+
+<ParamField path="payload.newYear" type="number" required>
+  The year to suggest adding to the vehicle's range. Must be between 1980 and 2099.
+</ParamField>
+
+<ParamField path="payload.userId" type="number" required>
+  The ID of the user submitting the suggestion.
+</ParamField>
+
+<ParamField path="payload.userName" type="string" required>
+  The display name of the user submitting the suggestion. Stored in the activity log.
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string" required>
+  One of `"success"`, `"info"`, `"warning"`, or `"error"`.
+  - `"success"` — suggestion recorded, or year range successfully updated (3 votes reached).
+  - `"info"` — the suggested year is already within the existing range, or no range update was needed.
+  - `"warning"` — the year collides with another vehicle entry and requires manual review.
+  - `"error"` — missing parameters, invalid year, or vehicle not found.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable explanation of the outcome. Examples:
+  - `"Sugerencia para el año 2019 registrada. Se necesitan 2 más para aplicar el cambio."`
+  - `"¡Gracias! Con 3 votos confirmados, el rango de años se ha actualizado a 2015-2021."`
+  - `"La sugerencia para el año 2019 no se puede aplicar porque parece corresponder a una generación diferente del mismo modelo."`
+</ResponseField>
+
+## Example
+
+```javascript
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwHTr8MSFuNio8rky8tflcErlRlAb1YSH2jmszZp77SM5e_-SVMO2pBU1UmeGOH1Aig/exec';
+
+const session = JSON.parse(localStorage.getItem('gpsepedia_session'));
+
+const response = await fetch(FEEDBACK_ENDPOINT, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify({
+    action: 'suggestYear',
+    payload: {
+      vehicleId: 42,
+      newYear: 2019,
+      userId: session.ID,
+      userName: session.Nombre_Completo
+    }
+  }),
+  redirect: 'follow'
+});
+
+const result = await response.json();
+// result.status will be 'success', 'info', or 'warning'
+console.log(result.message);
+```

@@ -1,45 +1,57 @@
 ---
 title: "Get users"
-description: "Retrieve the list of user accounts, filtered by the requesting user's role."
+description: "Retrieve the list of user accounts visible to the requesting user's role."
 ---
 
-Returns all user accounts visible to the current user. The server applies role-based filtering automatically — a `Tecnico` will only see their own account, while `Supervisor` and `Jefe` roles receive broader lists according to their access level.
+Returns user accounts from the system, filtered automatically based on the requesting user's role. Requires a valid session token — unauthenticated requests are rejected.
 
-**Endpoint:** `USERS` service
+**Endpoint:** `USERS` service — `https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec`
 
 **Action:** `getUsers`
 
-## Request
+| Requester role | Users returned |
+|---|---|
+| `Desarrollador` | All users |
+| `Gefe` / `Jefe` | `Supervisor` and `Tecnico` users only |
+| `Supervisor` | `Tecnico` users only |
+| `Tecnico` | Access denied |
 
-No payload required.
+## Request
 
 <ParamField path="action" type="string" required>
   Must be `"getUsers"`.
 </ParamField>
 
+<ParamField path="payload.sessionToken" type="string" required>
+  The active session token of the requesting user. Used to determine their role and filter the response.
+</ParamField>
+
 ## Response
 
 <ResponseField name="status" type="string" required>
-  Always `"success"` on success.
+  `"success"` on success, `"error"` on failure.
 </ResponseField>
 
-<ResponseField name="data" type="array">
-  Array of user objects.
+<ResponseField name="users" type="array">
+  Array of user objects visible to the requesting role. Note: the response key is `users`, not `data`.
   <Expandable title="user object properties">
     <ResponseField name="ID" type="number">
       Unique identifier for the user.
     </ResponseField>
     <ResponseField name="Nombre_Usuario" type="string">
-      The user's login username.
+      The user's login username (permanent, cannot be changed).
     </ResponseField>
     <ResponseField name="Nombre_Completo" type="string">
       The user's full display name.
     </ResponseField>
-    <ResponseField name="Rol" type="string">
-      The user's assigned role. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+    <ResponseField name="Privilegios" type="string">
+      The user's role. One of `"Tecnico"`, `"Supervisor"`, `"Jefe"`, `"Gefe"`, or `"Desarrollador"`.
     </ResponseField>
-    <ResponseField name="Estado" type="string">
-      Account status. Either `"Activo"` or `"Inactivo"`.
+    <ResponseField name="Telefono" type="string">
+      Phone number (may be empty).
+    </ResponseField>
+    <ResponseField name="Correo_Electronico" type="string">
+      Email address (may be empty).
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -49,19 +61,23 @@ No payload required.
 ```javascript
 const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
 
+const session = JSON.parse(localStorage.getItem('gpsepedia_session'));
+
 const response = await fetch(USERS_ENDPOINT, {
   method: 'POST',
   headers: { 'Content-Type': 'text/plain' },
-  body: JSON.stringify({ action: 'getUsers', payload: {} }),
+  body: JSON.stringify({
+    action: 'getUsers',
+    payload: { sessionToken: session.SessionToken }
+  }),
   redirect: 'follow'
 });
 
 const result = await response.json();
 if (result.status === 'success') {
-  const activeUsers = result.data.filter(u => u.Estado === 'Activo');
-  console.log(`${activeUsers.length} active users`);
-
-  const technicians = result.data.filter(u => u.Rol === 'Tecnico');
+  // Note: response key is `users`, not `data`
+  const users = result.users;
+  const technicians = users.filter(u => u.Privilegios === 'Tecnico');
   console.log('Technicians:', technicians.map(u => u.Nombre_Completo));
 }
 ```

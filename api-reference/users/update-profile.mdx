@@ -1,13 +1,17 @@
 ---
 title: "Update profile"
-description: "Allow a user to update their own display name."
+description: "Allow a user to update their own display name. Self-service only."
 ---
 
-Allows a logged-in user to update their own full display name (`Nombre_Completo`). This is a self-service action and does not require elevated role permissions. To change a user's role or status, use `updateUser` instead.
+Allows a logged-in user to update their own `Nombre_Completo` (display name). This is a self-service action — the server verifies that the `sessionToken` belongs to the `userId` being updated. A user cannot update another user's profile through this endpoint.
 
-**Endpoint:** `USERS` service
+**Endpoint:** `USERS` service — `https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec`
 
 **Action:** `updateProfile`
+
+<Note>
+  Only `Nombre_Completo` can be changed through this endpoint. To change a password, use `changePassword`. To change a role or manage other users, use `updateUser`.
+</Note>
 
 ## Request
 
@@ -16,17 +20,30 @@ Allows a logged-in user to update their own full display name (`Nombre_Completo`
 </ParamField>
 
 <ParamField path="payload.userId" type="number" required>
-  The ID of the currently logged-in user updating their own profile.
+  The ID of the currently authenticated user updating their own profile.
 </ParamField>
 
-<ParamField path="payload.Nombre_Completo" type="string" required>
-  The new full display name to set for the user.
+<ParamField path="payload.sessionToken" type="string" required>
+  The active session token of the user. Must match the session owner for the given `userId`.
+</ParamField>
+
+<ParamField path="payload.updates" type="object" required>
+  Object containing profile fields to update.
+  <Expandable title="updates properties">
+    <ParamField path="Nombre_Completo" type="string">
+      The new full display name to set. This appears in activity logs and as contributor credit on catalog entries.
+    </ParamField>
+  </Expandable>
 </ParamField>
 
 ## Response
 
 <ResponseField name="status" type="string" required>
-  Always `"success"` on success.
+  `"success"` on success, `"error"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"Perfil actualizado correctamente."` on success.
 </ResponseField>
 
 ## Example
@@ -34,7 +51,7 @@ Allows a logged-in user to update their own full display name (`Nombre_Completo`
 ```javascript
 const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
 
-const currentUserId = Number(localStorage.getItem('userId'));
+const session = JSON.parse(localStorage.getItem('gpsepedia_session'));
 
 const response = await fetch(USERS_ENDPOINT, {
   method: 'POST',
@@ -42,8 +59,11 @@ const response = await fetch(USERS_ENDPOINT, {
   body: JSON.stringify({
     action: 'updateProfile',
     payload: {
-      userId: currentUserId,
-      Nombre_Completo: 'Carlos Mejía Vargas'
+      userId: session.ID,
+      sessionToken: session.SessionToken,
+      updates: {
+        Nombre_Completo: 'Carlos Mejía Vargas'
+      }
     }
   }),
   redirect: 'follow'
@@ -52,6 +72,8 @@ const response = await fetch(USERS_ENDPOINT, {
 const result = await response.json();
 if (result.status === 'success') {
   console.log('Profile updated');
-  // Refresh the local user display name in the UI
+  // Update the stored session with the new display name
+  const updatedSession = { ...session, Nombre_Completo: 'Carlos Mejía Vargas' };
+  localStorage.setItem('gpsepedia_session', JSON.stringify(updatedSession));
 }
 ```

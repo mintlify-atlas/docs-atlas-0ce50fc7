@@ -3,12 +3,16 @@ title: "Authentication"
 description: "Log in with credentials and validate active sessions using the AUTH service."
 ---
 
-The AUTH service handles two actions: `login` for credential-based authentication and `validateSession` for verifying an existing session token. Both use the AUTH endpoint.
+The AUTH service handles two actions: `login` for credential-based authentication and `validateSession` for verifying an existing session token.
 
-**Endpoint:** `AUTH` service
+**Endpoint:** `AUTH` service — `https://script.google.com/macros/s/AKfycbwATstMSSnuYZMeGEjI7Q5cznO6kA8rqLo7zNZLmu_f29qwcyt4Fucn5VIBdB9tMoRg/exec`
 
 <Note>
-  After a successful login, store the `SessionToken` and `ID` from the response and pass them to `validateSession` on subsequent page loads to restore the user's session without requiring re-login.
+  The app stores the full user object in `localStorage` under the key `gpsepedia_session`. On each page load, `checkSession()` reads this and calls `validateSession` to confirm the session is still active before rendering the app.
+</Note>
+
+<Note>
+  Each role has a concurrent session limit enforced server-side: `Tecnico` = 1, `Supervisor` = 2, `Jefe` = 3, `Desarrollador` = unlimited. When the limit is exceeded, the oldest session is automatically revoked.
 </Note>
 
 ---
@@ -17,7 +21,7 @@ The AUTH service handles two actions: `login` for credential-based authenticatio
 
 **Action:** `login`
 
-Authenticates a user with a username and password. Returns a user object and session token on success.
+Authenticates a user with a username and password. Returns the full user object including a new `SessionToken` on success. Usernames are matched case-insensitively.
 
 ### Request
 
@@ -26,35 +30,42 @@ Authenticates a user with a username and password. Returns a user object and ses
 </ParamField>
 
 <ParamField path="payload.username" type="string" required>
-  The user's username.
+  The user's username (case-insensitive match).
 </ParamField>
 
 <ParamField path="payload.password" type="string" required>
-  The user's password.
+  The user's password (case-sensitive match).
 </ParamField>
 
 ### Response
 
 <ResponseField name="status" type="string" required>
-  Always `"success"` on success.
+  `"success"` on success, `"error"` on failure.
 </ResponseField>
 
 <ResponseField name="user" type="object">
+  Present only on success.
   <Expandable title="user properties">
     <ResponseField name="ID" type="number">
       Unique user identifier.
     </ResponseField>
     <ResponseField name="Nombre_Usuario" type="string">
-      The user's username.
+      The user's login username.
     </ResponseField>
     <ResponseField name="Nombre_Completo" type="string">
-      The user's full name.
+      The user's full display name.
     </ResponseField>
-    <ResponseField name="Rol" type="string">
-      The user's role. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
+    <ResponseField name="Privilegios" type="string">
+      The user's role. One of `"Tecnico"`, `"Supervisor"`, `"Jefe"`, `"Gefe"`, or `"Desarrollador"`.
+    </ResponseField>
+    <ResponseField name="Telefono" type="string">
+      The user's phone number (may be empty).
+    </ResponseField>
+    <ResponseField name="Correo_Electronico" type="string">
+      The user's email address (may be empty).
     </ResponseField>
     <ResponseField name="SessionToken" type="string">
-      A session token to use for subsequent `validateSession` calls.
+      A UUID session token. Pass this to `validateSession` on subsequent loads.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -76,9 +87,9 @@ const response = await fetch(AUTH_ENDPOINT, {
 
 const result = await response.json();
 if (result.status === 'success') {
-  const { ID, SessionToken, Rol } = result.user;
-  localStorage.setItem('userId', ID);
-  localStorage.setItem('sessionToken', SessionToken);
+  // Store the full user object as GPSpedia does internally
+  localStorage.setItem('gpsepedia_session', JSON.stringify(result.user));
+  const { ID, SessionToken, Privilegios } = result.user;
 }
 ```
 
@@ -88,7 +99,7 @@ if (result.status === 'success') {
 
 **Action:** `validateSession`
 
-Checks whether a previously issued session token is still valid. Use this on app startup to restore an authenticated session.
+Checks whether a previously issued session token is still active in the `ActiveSessions` sheet. Returns `{ valid: false }` — not an error — when the session is invalid or expired.
 
 ### Request
 
@@ -97,21 +108,17 @@ Checks whether a previously issued session token is still valid. Use this on app
 </ParamField>
 
 <ParamField path="payload.userId" type="number" required>
-  The ID of the user whose session is being validated.
+  The `ID` of the user from the stored session object.
 </ParamField>
 
 <ParamField path="payload.sessionToken" type="string" required>
-  The session token returned from a prior `login` response.
+  The `SessionToken` returned from a prior `login` response.
 </ParamField>
 
 ### Response
 
-<ResponseField name="status" type="string" required>
-  Always `"success"` on success.
-</ResponseField>
-
 <ResponseField name="valid" type="boolean">
-  `true` if the session token is valid and the user session is active; `false` otherwise.
+  `true` if the session token matches an active session for the given user ID; `false` otherwise. Note: this response does **not** include a `status` field on the success path — only `valid`.
 </ResponseField>
 
 ### Example
@@ -119,23 +126,28 @@ Checks whether a previously issued session token is still valid. Use this on app
 ```javascript
 const AUTH_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwATstMSSnuYZMeGEjI7Q5cznO6kA8rqLo7zNZLmu_f29qwcyt4Fucn5VIBdB9tMoRg/exec';
 
-const userId = Number(localStorage.getItem('userId'));
-const sessionToken = localStorage.getItem('sessionToken');
+const SESSION_KEY = 'gpsepedia_session';
+const sessionData = localStorage.getItem(SESSION_KEY);
 
-const response = await fetch(AUTH_ENDPOINT, {
-  method: 'POST',
-  headers: { 'Content-Type': 'text/plain' },
-  body: JSON.stringify({
-    action: 'validateSession',
-    payload: { userId, sessionToken }
-  }),
-  redirect: 'follow'
-});
+if (sessionData) {
+  const user = JSON.parse(sessionData);
 
-const result = await response.json();
-if (result.status === 'success' && result.valid) {
-  // Session is active — proceed to the app
-} else {
-  // Redirect to login
+  const response = await fetch(AUTH_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      action: 'validateSession',
+      payload: { userId: user.ID, sessionToken: user.SessionToken }
+    }),
+    redirect: 'follow'
+  });
+
+  const result = await response.json();
+  if (result.valid) {
+    // Session is active — proceed to load the app
+  } else {
+    // Session expired — clear storage and show login
+    localStorage.removeItem(SESSION_KEY);
+  }
 }
 ```

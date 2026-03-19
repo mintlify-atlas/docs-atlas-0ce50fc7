@@ -1,17 +1,27 @@
 ---
 title: "Update user"
-description: "Update a user's full name, role, or account status."
+description: "Update another user's display name, role, or password. Requires sufficient role permissions."
 ---
 
-Modifies an existing user account's full name, role assignment, or active status. This action is used by supervisors and administrators to manage team members.
+Modifies an existing user account. Allowed fields include `Nombre_Completo`, `Privilegios`, and `Password`. The `Nombre_Usuario` (username) field is permanently ignored — usernames cannot be changed.
 
-**Endpoint:** `USERS` service
+**Endpoint:** `USERS` service — `https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec`
 
 **Action:** `updateUser`
 
 <Note>
-  To change a user's password, use the `changePassword` action instead. To let a user update their own name, use `updateProfile`.
+  For a user updating their **own** display name, use `updateProfile` instead. For a user changing their **own** password (with current-password verification), use `changePassword`.
 </Note>
+
+<Warning>
+  Usernames (`Nombre_Usuario`) cannot be updated through this endpoint. The field is intentionally ignored server-side.
+</Warning>
+
+| Updater role | Who they can update |
+|---|---|
+| `Desarrollador` | Any user |
+| `Gefe` / `Jefe` | `Supervisor`, `Tecnico` |
+| `Supervisor` | `Tecnico` only |
 
 ## Request
 
@@ -19,26 +29,37 @@ Modifies an existing user account's full name, role assignment, or active status
   Must be `"updateUser"`.
 </ParamField>
 
-<ParamField path="payload.ID" type="number" required>
+<ParamField path="payload.userId" type="number" required>
   The ID of the user to update.
 </ParamField>
 
-<ParamField path="payload.Nombre_Completo" type="string" required>
-  The updated full display name for the user.
+<ParamField path="payload.sessionToken" type="string" required>
+  The active session token of the user performing the update. Used to verify role permissions.
 </ParamField>
 
-<ParamField path="payload.Rol" type="string" required>
-  The updated role assignment. One of `"Tecnico"`, `"Supervisor"`, or `"Jefe"`.
-</ParamField>
-
-<ParamField path="payload.Estado" type="string" required>
-  The updated account status. Either `"Activo"` or `"Inactivo"`.
+<ParamField path="payload.updates" type="object" required>
+  An object with one or more fields to update. All fields are optional individually.
+  <Expandable title="updates properties">
+    <ParamField path="Nombre_Completo" type="string">
+      Updated full display name.
+    </ParamField>
+    <ParamField path="Privilegios" type="string">
+      Updated role. Must be a role the updater is permitted to assign (see table above).
+    </ParamField>
+    <ParamField path="Password" type="string">
+      New password. No current-password verification is required when an admin updates via this endpoint.
+    </ParamField>
+  </Expandable>
 </ParamField>
 
 ## Response
 
 <ResponseField name="status" type="string" required>
-  Always `"success"` on success.
+  `"success"` on success, `"error"` on failure.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  `"Usuario actualizado."` on success.
 </ResponseField>
 
 ## Example
@@ -46,16 +67,20 @@ Modifies an existing user account's full name, role assignment, or active status
 ```javascript
 const USERS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxAqyEcAHetH6yN4qccGILL-L3IzMSPVuVJ1kpuO86GqfDXTKP8cHrrB7UkKN1r_0g5/exec';
 
+const session = JSON.parse(localStorage.getItem('gpsepedia_session'));
+
 const response = await fetch(USERS_ENDPOINT, {
   method: 'POST',
   headers: { 'Content-Type': 'text/plain' },
   body: JSON.stringify({
     action: 'updateUser',
     payload: {
-      ID: 12,
-      Nombre_Completo: 'María A. García',
-      Rol: 'Supervisor',
-      Estado: 'Activo'
+      userId: 12,
+      sessionToken: session.SessionToken,
+      updates: {
+        Nombre_Completo: 'María A. García',
+        Privilegios: 'Supervisor'
+      }
     }
   }),
   redirect: 'follow'
@@ -63,6 +88,6 @@ const response = await fetch(USERS_ENDPOINT, {
 
 const result = await response.json();
 if (result.status === 'success') {
-  console.log('User 12 updated successfully');
+  console.log('User updated successfully');
 }
 ```

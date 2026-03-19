@@ -3,45 +3,53 @@ title: "User roles"
 description: "Understand the three role levels in GPSpedia and what each role can do."
 ---
 
-GPSpedia uses a role-based access control (RBAC) system with three tiers. Each role inherits the capabilities of the roles below it in the hierarchy.
+GPSpedia uses a role-based access control (RBAC) system enforced server-side across all API services. All user management operations include a `sessionToken` that the server resolves to a role before allowing the action.
 
 ## Role hierarchy
 
 ```
-Jefe (Gefe)
-  └── Supervisor
-        └── Tecnico
+Desarrollador
+  └── Gefe / Jefe
+        └── Supervisor
+              └── Tecnico / Tecnico_exterior
 ```
 
-The **Jefe** role sits at the top with full platform access. **Supervisor** handles team management. **Tecnico** is the standard working role for GPS installation professionals.
+<Note>
+  `Gefe` and `Jefe` are treated as equivalent roles server-side. Both map to the same permission level. Accounts are typically created with one or the other depending on the team's naming convention.
+</Note>
 
 ## Role capabilities
 
-| Capability | Tecnico | Supervisor | Jefe |
-|---|:---:|:---:|:---:|
-| Browse the vehicle catalog | ✓ | ✓ | ✓ |
-| Add cut point records | ✓ | ✓ | ✓ |
-| Vote on cut point entries | ✓ | ✓ | ✓ |
-| Report data problems | ✓ | ✓ | ✓ |
-| Manage Tecnico users | — | ✓ | ✓ |
-| Manage all users | — | — | ✓ |
-| Create and delete users | — | — | ✓ |
-| Access Activity Dashboard | — | ✓ | ✓ |
-| Access Inbox | — | — | ✓ |
-| Access Developer Tools | — | — | ✓ |
-| Run data migrations | — | — | ✓ |
+| Capability | Tecnico | Supervisor | Jefe / Gefe | Desarrollador |
+|---|:---:|:---:|:---:|:---:|
+| Browse the vehicle catalog | ✓ | ✓ | ✓ | ✓ |
+| Add cut point records | ✓ | ✓ | ✓ | ✓ |
+| Vote on cut point entries | ✓ | ✓ | ✓ | ✓ |
+| Report data problems | ✓ | ✓ | ✓ | ✓ |
+| View Tecnico users | — | ✓ | ✓ | ✓ |
+| View all users | — | — | ✓ | ✓ |
+| Create Tecnico accounts | — | ✓ | ✓ | ✓ |
+| Create Supervisor / Jefe accounts | — | — | ✓ | ✓ |
+| Delete users | — | ✓ (Tecnico only) | ✓ | ✓ |
+| Access Inbox | — | — | ✓ | ✓ |
+| Access Activity Dashboard | — | — | ✓ | ✓ |
+| Access Developer Tools | — | — | ✓ | ✓ |
+| Run data migrations | — | — | ✓ | ✓ |
 
 ## Role descriptions
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Tecnico" icon="wrench">
-    The standard role for GPS installation technicians. Tecnicos can browse the full vehicle catalog, add new cut point records, vote on existing entries, and report problems with specific data.
+    Standard role for GPS installation technicians. Full catalog read access, can add cut records, vote, and report problems. Session limit: 1 concurrent session.
+  </Card>
+  <Card title="Tecnico_exterior" icon="truck">
+    Same permissions as Tecnico. Used for field technicians working outside the primary team. Session limit: 1 concurrent session.
   </Card>
   <Card title="Supervisor" icon="users">
-    All Tecnico capabilities, plus the ability to manage Tecnico-level users within the platform. Supervisors can also access the Activity Dashboard to monitor team activity.
+    All Tecnico capabilities plus management of Tecnico users. Can view the user list filtered to Tecnicos and create or delete Tecnico accounts. Session limit: 2 concurrent sessions.
   </Card>
-  <Card title="Jefe (Gefe)" icon="shield">
-    Full platform access. Jefes manage all users across all roles, access the Inbox for problem reports and contact messages, use Developer Tools, and run backend data migrations.
+  <Card title="Jefe / Gefe" icon="shield">
+    Full administrative access. Manages Supervisor and Tecnico users, accesses the Inbox, Activity Dashboard, and Developer Tools. Can run data migrations. Session limit: 3 concurrent sessions.
   </Card>
 </CardGroup>
 
@@ -52,26 +60,35 @@ The **Jefe** role sits at the top with full platform access. **Supervisor** hand
 Tecnicos are the everyday users of GPSpedia — GPS installation professionals consulting the platform for vehicle-specific wiring data.
 
 - **Catalog access:** Full read access to all vehicle records, cut point images, relay configurations, and installation guides.
-- **Contributing data:** Can add new cut point entries and relay records to the catalog.
-- **Voting:** Can upvote or flag cut point images and data entries to indicate accuracy.
+- **Contributing data:** Can add new cut point entries to the catalog using the Add New Record form.
+- **Voting:** Can upvote cut point entries to indicate accuracy (one vote per cut per session).
 - **Problem reporting:** Can submit a problem report on any cut point image using the ⚠️ report button.
+
+### Tecnico_exterior
+
+Same permissions as Tecnico. This role designation is used to distinguish external field technicians from internal team members.
 
 ### Supervisor
 
 Supervisors have all Tecnico capabilities and take on team management responsibilities.
 
-- **User management:** Can view, edit, and update Tecnico users. Cannot manage Supervisor or Jefe accounts.
-- **Activity Dashboard:** Can access the Dashboard to review recent platform activity across the team.
+- **User management:** Can view, create, edit, and delete Tecnico users. Cannot manage Supervisor or Jefe accounts.
+- **Session management:** Supports up to 2 concurrent sessions.
 
-### Jefe (Gefe)
+### Jefe / Gefe
 
 The Jefe role carries full administrative authority over the platform.
 
-- **User management:** Can create, edit, and delete users of any role, including other Supervisors.
+- **User management:** Can create, edit, and delete Supervisor and Tecnico users.
 - **Inbox:** Receives and responds to problem reports and contact form messages.
+- **Activity Dashboard:** Reviews recent platform activity logs.
 - **Developer Tools:** Access to the debug console and data migration utilities.
 - **Data migrations:** Can run `Migrar Rangos de Años` and `Migrar Timestamps` to update backend data formats.
 
+### Desarrollador
+
+Reserved for system administrators. Has unrestricted access to all platform features and user management, with no session concurrency limit.
+
 <Note>
-  Role assignment is made by a Jefe at the time of account creation. Roles can be updated afterward through the user management page, but only by a Jefe.
+  Role assignment is made by a Jefe or Desarrollador at the time of account creation. Roles can be updated afterward through the `updateUser` API action.
 </Note>

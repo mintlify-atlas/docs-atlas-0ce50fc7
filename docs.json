@@ -98,6 +98,7 @@
             "pages": [
               "api-reference/feedback/record-like",
               "api-reference/feedback/report-problem",
+              "api-reference/feedback/suggest-year",
               "api-reference/feedback/send-contact-form",
               "api-reference/feedback/get-feedback-items",
               "api-reference/feedback/reply-to-feedback",
